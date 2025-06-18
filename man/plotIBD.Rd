@@ -17,7 +17,7 @@ plotIBD(data, segments = NULL, chrom = NULL, ncol = NULL)
 is chosen automatically.}
 }
 \value{
-Plot object.
+A \code{ggplot2} plot.
 }
 \description{
 Plot IBD segments and posteriors

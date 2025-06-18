@@ -7,7 +7,7 @@
 #' @param ncol Number of columns in the plot. By default a suitable layout
 #'   is chosen automatically.
 #'
-#' @returns Plot object.
+#' @returns A `ggplot2` plot.
 #'
 #' @seealso [findSegments()], [ibdPosteriors()]
 #'
@@ -18,6 +18,7 @@
 #' segs = findSegments(x, k1 = 0.2, a = 10)
 #' plotIBD(post, segs)
 #'
+#' @importFrom ggplot2 aes
 #' @export
 plotIBD = function(data, segments = NULL, chrom = NULL, ncol = NULL) {
   if(!is.null(chrom)) {
@@ -27,14 +28,12 @@ plotIBD = function(data, segments = NULL, chrom = NULL, ncol = NULL) {
   chrs = unique(data$chrom)
   ncol = ncol %||% ceiling(sqrt(length(chrs)))
 
-  ggplot2::ggplot(data, ggplot2::aes(x = cm)) +
+  p = ggplot2::ggplot(data, aes(x = cm)) +
     ggplot2::facet_wrap("chrom", ncol = ncol, scales = "free_x",
                         labeller = ggplot2::labeller(chrom = \(i) paste0("Chr", i))) +
-    ggplot2::geom_jitter(ggplot2::aes(y = ibs/2), show.legend = FALSE,  color = "gray",
+    ggplot2::geom_jitter(aes(y = ibs/2), show.legend = FALSE,  color = "gray",
                          width = 0, height = .075, size = 1, alpha = 1) +
-    ggplot2::geom_line(ggplot2::aes(y = post), col = 1) +
-    ggplot2::geom_segment(ggplot2::aes(x = start, xend = end, y = -0.15, yend = -0.15),
-                          data = segments, size = 1.5, color = "red") +
+    ggplot2::geom_line(aes(y = post), col = 1) +
     ggplot2::theme_bw() +
     ggplot2::scale_y_continuous(
       name = "Posterior",
@@ -53,6 +52,13 @@ plotIBD = function(data, segments = NULL, chrom = NULL, ncol = NULL) {
       axis.text.y.right  = ggplot2::element_text(color = 8, size = 6),
       axis.ticks.y.right = ggplot2::element_line(color = 8)
     )
+
+  if(!is.null(segments)) {
+    p = p + ggplot2::geom_segment(
+      data = as.data.frame(segments), size = 1.5, color = "red",
+      aes(x = start, xend = end, y = -0.15, yend = -0.15))
+  }
+  p
 }
 
 

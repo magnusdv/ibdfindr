@@ -42,9 +42,14 @@
 
 #' Identify IBD segments
 #'
+#' Identify genomic segments shared identical-by-descent (IBD) between two individuals
+#' from SNP marker data. The underlying method uses a hidden Markov model (HMM) and
+#' the Viterbi algorithm to infer the most likely IBD state (0 = non-IBD, 1 = IBD)
+#' at each marker.
+#'
 #' @param data Data frame with required columns `chrom`, `cm`, `a1` and `freq1`.
 #' @param ids Genotype columns (default: last 2 columns).
-#' @param k1,a HMM parameters.
+#' @param k1,a HMM parameters. See [fitHMM()] for how to estimate these.
 #'
 #' @returns Data frame with IBD segments.
 #' @seealso [plotIBD()]

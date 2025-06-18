@@ -11,14 +11,15 @@ ibdPosteriors(data, ids = NULL, k1, a)
 
 \item{ids}{Genotype columns (default: last 2 columns).}
 
-\item{k1, a}{HMM parameters.}
+\item{k1, a}{HMM parameters. See \code{\link[=fitHMM]{fitHMM()}} for how to estimate these.}
 }
 \value{
 Data frame similar to \code{data}, with a column \code{post} containing the
 posterior IBD probability at each marker locus.
 }
 \description{
-IBD posteriors
+Computes the posterior probability of identity‐by‐descent (IBD) at each
+marker locus via the HMM forward–backward algorithm.
 }
 \examples{
 ibdPosteriors(cousinsDemo, k1 = 0.2, a = 5)

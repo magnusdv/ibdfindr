@@ -16,18 +16,6 @@ ibsState = function(g1, g2) {
   ibs
 }
 
-isX = function(chrom) {
-  chroms = unique.default(tolower(chrom))
-  Xnames = c("x", "chrx", "chromx", "23", "chr23", "chrom23")
-
-  if(any(Xnames %in% chroms)) {
-    if(length(chroms) > 1)
-      stop2("Cannot mix X with other chromosomes")
-    return(TRUE)
-  }
-
-  FALSE
-}
 
 getsex = function(data, ids = c("g1", "g2")) {
   sapply(ids, function(id) if(all(nchar(data[[id]]) == 1)) 1 else 2)

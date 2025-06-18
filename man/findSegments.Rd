@@ -11,13 +11,16 @@ findSegments(data, ids = NULL, k1, a)
 
 \item{ids}{Genotype columns (default: last 2 columns).}
 
-\item{k1, a}{HMM parameters.}
+\item{k1, a}{HMM parameters. See \code{\link[=fitHMM]{fitHMM()}} for how to estimate these.}
 }
 \value{
 Data frame with IBD segments.
 }
 \description{
-Identify IBD segments
+Identify genomic segments shared identical-by-descent (IBD) between two individuals
+from SNP marker data. The underlying method uses a hidden Markov model (HMM) and
+the Viterbi algorithm to infer the most likely IBD state (0 = non-IBD, 1 = IBD)
+at each marker.
 }
 \examples{
 findSegments(cousinsDemo, k1 = 0.2, a = 5)

@@ -40,12 +40,16 @@
 
 #' IBD posteriors
 #'
+#' Computes the posterior probability of identity‐by‐descent (IBD) at each
+#' marker locus via the HMM forward–backward algorithm.
+#'
 #' @param data Data frame with required columns `chrom`, `cm`, `a1` and `freq1`.
 #' @param ids Genotype columns (default: last 2 columns).
-#' @param k1,a HMM parameters.
+#' @param k1,a HMM parameters. See [fitHMM()] for how to estimate these.
 #'
 #' @returns Data frame similar to `data`, with a column `post` containing the
 #'   posterior IBD probability at each marker locus.
+#'
 #' @seealso [plotIBD()]
 #'
 #' @examples
@@ -65,7 +69,7 @@ ibdPosteriors = function(data, ids = NULL, k1, a) {
   # Loop through chroms
   for(chr in chroms) {
     subdat = .data[.data$chrom == chr, , drop  = FALSE]
-    post = .ibdPosteriors(subdat, k1, a, Xchrom = Xchrom)
+    post = .ibdPosteriors(subdat, k1, a, Xchrom = Xchrom, sex = sex)
 
     # Add column with posteriors
     subdat$post = post

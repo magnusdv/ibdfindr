@@ -31,7 +31,7 @@
 #' fitHMM(cousinsDemo)
 #' }
 #'
-#' @importFrom stats optim
+#' @importFrom stats optim optimise
 #' @importFrom forrel ibdEstimate
 #' @export
 fitHMM = function(data, ids = NULL, thompson = TRUE, verbose = FALSE, ...) {
@@ -58,15 +58,17 @@ fitHMM = function(data, ids = NULL, thompson = TRUE, verbose = FALSE, ...) {
 
   if(thompson) {
     s = asSingletons(.data, prep = FALSE)
-    khat = ibdEstimate(s, verbose = FALSE)
-    if(verbose)
-      cat(sprintf("Initial kappa estimate: %.4g\n", khat))
-    k1 = khat[[1, "k1"]]
+    khat = ibdEstimate(s, verbose = FALSE)[1, 4:6] |> as.numeric()
+    k1 = khat[2]
+    if(verbose) {
+      cat(sprintf("Estimate of realised IBD: (k0, k1, k2) = (%s)\n", toString(round(khat,3))))
+      cat("Optimising `a` conditional on k1\n")
+    }
 
     # Optimise `a` with k1 fixed
     fn1 = function(a) -totalLoglik(.data, k1 = k1, a = a)
-    res = optim(a_init, fn1, method = "L-BFGS-B", lower = 0.001, upper = 100, control = control)
-    return(list(k1 = k1, a = res$par))
+    res = optimise(fn1, interval = c(.01, 100), tol = 0.001)  # a bit faster than `optim`
+    return(list(k1 = k1, a = res$minimum))
   }
 
   # Autosomal method 2: optimise k1 and a together
