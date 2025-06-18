@@ -1,0 +1,76 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%",
+  dpi = 300
+)
+```
+
+# ibdfindr
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of ibdfindr is to detect genomic regions shared *identical by descent* (IBD) between two individuals, using SNP genotypes. It does so by fitting a continuous-time hidden Markov model (HMM) to the data.
+
+## Installation
+
+You can install the development version of ibdfindr like so:
+
+```{r eval = F}
+remotes::install_github("magnusdv/ibdfindr")
+```
+
+## Example
+
+```{r}
+library(ibdfindr)
+```
+
+As an example we consider the built-in dataset `cousinsDemo`, which contains SNP genotypes for two related individuals (in fact, a pair of cousins).
+```{r}
+head(cousinsDemo)
+```
+
+#### Fitting the HMM
+To find IBD segments, we first need to fit a HMM to the data:
+```{r}
+mod = fitHMM(cousinsDemo)
+mod
+```
+
+The `fitHMM()` function returns two parameters: `k1`, the prior probability of being in an IBD state, and `a`, the switching rate between IBD/nonIBD states along the chromosome.
+
+#### Finding IBD segments and posteriors
+
+After fitting the model we can find the most likely set of IBD segments (using the [Viterbi](https://en.wikipedia.org/wiki/Viterbi_algorithm) algorithm):
+
+```{r}
+segs = findSegments(cousinsDemo, k1 = mod$k1, a = mod$a)
+segs
+```
+
+We can also compute the posterior IBD probabilities at each marker locus (using the [forward-backward](https://en.wikipedia.org/wiki/Forward%E2%80%93backward_algorithm) algorithm):
+
+```{r}
+post = ibdPosteriors(cousinsDemo, k1 = mod$k1, a = mod$a)
+head(post)
+```
+
+The output is a standardised version of the input (in particular, the genotypes are converted to numeric alleles), with two new columns at the end: `ibs` (the number of alleles shared IBD) and `post` (the posterior IBD probability).
+
+#### Plot the results
+
+Finally, we can plot the IBD segments and posteriors. The gray points in the background show the identity-by-state (IBS) at each marker, i.e. whether the individuals have 0, 1 or 2 alleles in common. Inferred IBD regions are shown as red segments at the bottom of each chromosome panel.
+
+```{r, fig.height = 7, fig.width = 8}
+plotIBD(post, segments = segs, ncol = 4)
+```
