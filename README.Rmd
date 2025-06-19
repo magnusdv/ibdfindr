@@ -9,6 +9,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
+  fig.align = "center",
   out.width = "100%",
   dpi = 300
 )
@@ -19,11 +20,11 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of ibdfindr is to detect genomic regions shared *identical by descent* (IBD) between two individuals, using SNP genotypes. It does so by fitting a continuous-time hidden Markov model (HMM) to the data.
+The goal of **ibdfindr** is to detect genomic regions shared *identical by descent* (IBD) between two individuals, using SNP genotypes. It does so by fitting a continuous-time hidden Markov model (HMM) to the data.
 
 ## Installation
 
-You can install the development version of ibdfindr like so:
+You can install the development version of **ibdfindr** from GitHub:
 
 ```{r eval = F}
 remotes::install_github("magnusdv/ibdfindr")
@@ -35,42 +36,29 @@ remotes::install_github("magnusdv/ibdfindr")
 library(ibdfindr)
 ```
 
-As an example we consider the built-in dataset `cousinsDemo`, which contains SNP genotypes for two related individuals (in fact, a pair of cousins).
+As an example we consider the built-in dataset `cousinsDemo`, which contains almost 4000 SNP genotypes for two related individuals (in fact, a pair of cousins).
 ```{r}
 head(cousinsDemo)
 ```
 
-#### Fitting the HMM
-To find IBD segments, we first need to fit a HMM to the data:
+The function `findIBD()` conveniently wraps the key steps of the package: it fits a HMM, identifies IBD segments, and computes marker-wise posterior IBD probabilities. 
 ```{r}
-mod = fitHMM(cousinsDemo)
-mod
+ibd = findIBD(cousinsDemo)
 ```
+For details of the different steps, see the documentation of the individual functions: `fitHMM()`, `findSegments()`, and `ibdPosteriors()`.
 
-The `fitHMM()` function returns two parameters: `k1`, the prior probability of being in an IBD state, and `a`, the switching rate between IBD/nonIBD states along the chromosome.
-
-#### Finding IBD segments and posteriors
-
-After fitting the model we can find the most likely set of IBD segments (using the [Viterbi](https://en.wikipedia.org/wiki/Viterbi_algorithm) algorithm):
-
-```{r}
-segs = findSegments(cousinsDemo, k1 = mod$k1, a = mod$a)
-segs
-```
-
-We can also compute the posterior IBD probabilities at each marker locus (using the [forward-backward](https://en.wikipedia.org/wiki/Forward%E2%80%93backward_algorithm) algorithm):
-
-```{r}
-post = ibdPosteriors(cousinsDemo, k1 = mod$k1, a = mod$a)
-head(post)
-```
-
-The output is a standardised version of the input (in particular, the genotypes are converted to numeric alleles), with two new columns at the end: `ibs` (the number of alleles shared IBD) and `post` (the posterior IBD probability).
-
-#### Plot the results
-
-Finally, we can plot the IBD segments and posteriors. The gray points in the background show the identity-by-state (IBS) at each marker, i.e. whether the individuals have 0, 1 or 2 alleles in common. Inferred IBD regions are shown as red segments at the bottom of each chromosome panel.
+To visualise the results we pass the output to `plotIBD()`. This plots the posterior probabilities on a background (gray points) showing the identity-by-state (IBS) status at each marker, i.e. whether the individuals have 0, 1 or 2 alleles in common. Inferred IBD regions are shown as red segments at the bottom of each chromosome panel.
 
 ```{r, fig.height = 7, fig.width = 8}
-plotIBD(post, segments = segs, ncol = 4)
+plotIBD(ibd)
 ```
+
+## X-chromosome example
+
+The `brothersX` dataset contains genotypes for two brothers typed with 246 X-chromosomal SNPs. The analysis below indicates that they share 3 IBD segments on the X chromosome.
+```{r fig.height = 3, fig.width = 6, out.width = "70%"}
+ibdX = findIBD(brothersX)
+
+plotIBD(ibdX)
+```
+

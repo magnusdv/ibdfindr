@@ -35,7 +35,7 @@ plotIBD = function(x, segments = NULL, chrom = NULL, ncol = NULL) {
     segments = segments[segments$chrom %in% chrom, , drop = FALSE] # NULL ok
   }
   chrs = unique(data$chrom)
-  ncol = ncol %||% ceiling(sqrt(length(chrs)))
+  ncol = ncol %||% min(4, ceiling(sqrt(length(chrs))))
 
   p = ggplot2::ggplot(data, aes(x = cm)) +
     ggplot2::facet_wrap("chrom", ncol = ncol, scales = "free_x",
