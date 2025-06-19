@@ -104,7 +104,7 @@ prepForHMM = function(data, ids = NULL, keepOld = FALSE) {
 
   data$g1 = g2num(data[[ids[1]]], data$a1, Xchrom = Xchrom)
   data$g2 = g2num(data[[ids[2]]], data$a1, Xchrom = Xchrom)
-  data$ibs = ibsState(data$g1, data$g2)
+  data$ibs = ibsState(data$g1, data$g2, Xchrom = Xchrom)
 
   if(!keepOld)
     data = data[, c("chrom", "marker", "cm", "freq1", "g1", "g2", "ibs"), drop = FALSE]

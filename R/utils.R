@@ -8,11 +8,34 @@ stop2 = function(...) {
 nrm = function(x) x/sum(x)
 
 # Return IBS states of two genotype vectors
-ibsState = function(g1, g2) {
+ibsState = function(g1, g2, Xchrom = FALSE) {
   ibs = rep(1L, length(g1))
-  ibs[g1 == g2] = 2L
-  ibs[g1 == "1/1" & g2 == "2/2"] = 0L
-  ibs[g1 == "2/2" & g2 == "1/1"] = 0L
+
+  if(!Xchrom) {
+    ibs[g1 == g2] = 2L
+    ibs[g1 == "1/1" & g2 == "2/2"] = 0L
+    ibs[g1 == "2/2" & g2 == "1/1"] = 0L
+  }
+  else { # TODO: not very clever
+    male1 = all(nchar(g1) == 1)
+    male2 = all(nchar(g2) == 1)
+    if(male1 && male2) {
+      ibs[g1 != g2] = 0L
+    }
+    else if(male1 && !male2) {
+      ibs[g1 == "1" & g2 == "2/2"] = 0L
+      ibs[g1 == "2" & g2 == "1/1"] = 0L
+    }
+    else if(!male1 && male2) {
+      ibs[g1 == "1/1" & g2 == "2"] = 0L
+      ibs[g1 == "2/2" & g2 == "1"] = 0L
+    }
+    else {
+      ibs[g1 == g2] = 2L
+      ibs[g1 == "1/1" & g2 == "2/2"] = 0L
+      ibs[g1 == "2/2" & g2 == "1/1"] = 0L
+    }
+  }
   ibs
 }
 
