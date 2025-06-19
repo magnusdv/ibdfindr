@@ -4,12 +4,24 @@
 \alias{fitHMM}
 \title{Fit a Hidden Markov Model to genotype data}
 \usage{
-fitHMM(data, ids = NULL, thompson = TRUE, verbose = FALSE, ...)
+fitHMM(
+  data,
+  ids = NULL,
+  k1 = NULL,
+  a = NULL,
+  thompson = TRUE,
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
-\item{data}{Data frame with required columns \code{chrom}, \code{cm}, \code{a1} and \code{freq1}.}
+\item{data}{Data frame with required columns \code{chrom}, \code{cm}, \code{a1} and \code{freq1}
+(case insensitive).}
 
 \item{ids}{Genotype columns (default: last 2 columns).}
+
+\item{k1, a}{Numeric HMM parameters. Supplying a value fixes the parameter; if
+NULL (default), the parameter is estimated.}
 
 \item{thompson}{A logical indicating the optimisation method. (See Details.)}
 

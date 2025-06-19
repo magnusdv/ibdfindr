@@ -13,8 +13,11 @@
 #' If `thompson = FALSE`, both parameters `k1` and `a` are optimised together.
 #' (This is the only method for X chromosomal data.)
 #'
-#' @param data Data frame with required columns `chrom`, `cm`, `a1` and `freq1`.
+#' @param data Data frame with required columns `chrom`, `cm`, `a1` and `freq1`
+#'   (case insensitive).
 #' @param ids Genotype columns (default: last 2 columns).
+#' @param k1,a Numeric HMM parameters. Supplying a value fixes the parameter; if
+#'   NULL (default), the parameter is estimated.
 #' @param thompson A logical indicating the optimisation method. (See Details.)
 #' @param verbose A logical indicating whether to print information during the
 #'   optimisation.
@@ -34,26 +37,60 @@
 #' @importFrom stats optim optimise
 #' @importFrom forrel ibdEstimate
 #' @export
-fitHMM = function(data, ids = NULL, thompson = TRUE, verbose = FALSE, ...) {
+fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE, verbose = FALSE, ...) {
 
   .data = prepForHMM(data, ids = ids)
 
   # Initial parameter values
-  k1_init = 0.5
-  a_init = 50
+  k1_init = k1 %||% 0.5
+  a_init = a %||% 5
 
-  # Control parameters
-  control = if(verbose) list(trace = 3, REPORT = 1) else control = list(...)
+  # X and sex
+  Xchrom = all(.data$chrom == 23)
+  sex = if(Xchrom) getsex(.data) else NULL
+
+  if(verbose) {
+    if(Xchrom)
+      cat(sprintf("Chromosome type: X (%s)\n", paste(c("male", "female")[sex], collapse="/")))
+    else
+      cat("Chromosome type: autosomal\n")
+  }
+  # If `k1` or `a` are provided: estimate the other -------------------------
+
+  if(!is.null(k1) && !is.null(a)) {
+    if(verbose) cat("Nothing to do; parameters provided: k1 =", k1, ", a =", a, "\n")
+    return(list(k1 = k1, a = a))
+  }
+  if(!is.null(k1) && is.null(a)) {
+    if(verbose) cat("Optimising `a` conditional on k1 =", k1, "\n")
+    fn01 = function(a) -totalLoglik(.data, k1 = k1, a = a, Xchrom = Xchrom, sex = sex)
+    res = optimise(fn01, interval = c(0.001, 100), tol = 0.001)
+    return(list(k1 = k1, a = res$minimum))
+  }
+  if(is.null(k1) && !is.null(a)) {
+    if(verbose) cat("Optimising `k1` conditional on a =", a, "\n")
+    fn02 = function(k1) -totalLoglik(.data, k1 = k1, a = a, Xchrom = Xchrom, sex = sex)
+    res = optimise(fn02, interval = c(0.001, 0.999), tol = 0.001)
+    return(list(k1 = res$minimum, a = a))
+  }
+
+
+  # Otherwise: Estimate both ------------------------------------------------
+
+  # Control parameters for `optim`
+  control = list(...)
 
   # X chromosome
-  Xchrom = all(.data$chrom == 23)
   if(Xchrom) {
-    fnx = function(p) -totalLoglik(.data, k1 = p[1], a = p[2], Xchrom = TRUE, sex = getsex(.data))
+    fnx = function(p) -totalLoglik(.data, k1 = p[1], a = p[2], Xchrom = TRUE, sex = sex)
     res = optim(c(k1 = k1_init, a = a_init), fnx, method = "L-BFGS-B",
                 lower = c(0.001,0.001), upper = c(0.999, 100), control = control)
     return(as.list(res$par))
   }
 
+  if(verbose) {
+    cat("Thompson estimation:", thompson, "\n")
+  }
   # Autosomal method 1: thompson optimisation of k1
 
   if(thompson) {
@@ -61,8 +98,8 @@ fitHMM = function(data, ids = NULL, thompson = TRUE, verbose = FALSE, ...) {
     khat = ibdEstimate(s, verbose = FALSE)[1, 4:6] |> as.numeric()
     k1 = khat[2]
     if(verbose) {
-      cat(sprintf("Estimate of realised IBD: (k0, k1, k2) = (%s)\n", toString(round(khat,3))))
-      cat("Optimising `a` conditional on k1\n")
+      cat(sprintf("Estimated kappa: (k0, k1, k2) = (%s)\n", toString(round(khat,3))))
+      cat("Optimising `a` conditional on k1 =", round(khat[2],3), "\n")
     }
 
     # Optimise `a` with k1 fixed
