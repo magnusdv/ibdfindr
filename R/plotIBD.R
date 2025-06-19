@@ -1,26 +1,35 @@
 
 #' Plot IBD segments and posteriors
 #'
-#' @param data A data frame, typically produced by [ibdPosteriors()].
-#' @param segments A data frame with IBD segments, typically produced by [findSegments()].
+#' @param x A data frame, typically produced by [ibdPosteriors()], or a list
+#'   produced by [findIBD()].
+#' @param segments A data frame with IBD segments, typically produced by
+#'   [findSegments()].
 #' @param chrom A vector of chromosomes to plot (default: all).
-#' @param ncol Number of columns in the plot. By default a suitable layout
-#'   is chosen automatically.
+#' @param ncol Number of columns in the plot. By default a suitable layout is
+#'   chosen automatically.
 #'
 #' @returns A `ggplot2` plot.
 #'
 #' @seealso [findSegments()], [ibdPosteriors()]
 #'
 #' @examples
-#' x = subset(cousinsDemo, CHROM %in% 11:13)
-#'
-#' post = ibdPosteriors(x, k1 = 0.2, a = 10)
-#' segs = findSegments(x, k1 = 0.2, a = 10)
-#' plotIBD(post, segs)
+#' x = subset(cousinsDemo, CHROM %in% 3:4)
+#' ibd = findIBD(x, k1 = 0.2, a = 5)
+#' plotIBD(ibd)
 #'
 #' @importFrom ggplot2 aes
 #' @export
-plotIBD = function(data, segments = NULL, chrom = NULL, ncol = NULL) {
+plotIBD = function(x, segments = NULL, chrom = NULL, ncol = NULL) {
+  if(is.list(x) && !is.null(x$posteriors) && !is.null(x$segments)) {
+    # x is a list from findIBD()
+    data = x$posteriors
+    segments = x$segments
+  } else {
+    # x is a data frame from ibdPosteriors()
+    data = x
+  }
+
   if(!is.null(chrom)) {
     data = data[data$chrom %in% chrom, , drop = FALSE]
     segments = segments[segments$chrom %in% chrom, , drop = FALSE] # NULL ok
