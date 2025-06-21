@@ -10,22 +10,21 @@
   n = nrow(.data)
   d = c(0, diff(.data$cm)) / 100
 
-  # Emission probabilities as 2*n matrix
-  emProb = emissionMat(.data$freq1, g1 = .data$g1, g2 = .data$g2, Xchrom = Xchrom, sex = sex)
+  emiss = as.matrix(.data[c("emission0","emission1")])
 
   # Viterbi algorithm -------------------------------------------------------
 
   inits = c(nonIBD = 1 - k1, IBD = k1)
 
   vit = ptr = matrix(NA_real_, 2, n)
-  vit[,1] = log(inits) + log(emProb[,1])
+  vit[,1] = log(inits) + log(emiss[1,])
 
   for(i in 2:n) {
     tm = log(trans(d[i], k1, a))
     for(s in 1:2) {
       scores = vit[, i-1] + tm[, s]
       ptr[s,i] = which.max(scores)
-      vit[s,i] = max(scores) + log(emProb[s, i])
+      vit[s,i] = max(scores) + log(emiss[i,s])
     }
   }
 
@@ -50,6 +49,8 @@
 #' @param data Data frame with required columns `chrom`, `cm`, `a1` and `freq1`.
 #' @param ids Genotype columns (default: last 2 columns).
 #' @param k1,a HMM parameters. See [fitHMM()] for how to estimate these.
+#' @param prepped A logical indicating if the input data has undergone internal
+#'   prepping. Can be ignored by most users.
 #'
 #' @returns Data frame with IBD segments.
 #' @seealso [plotIBD()]
@@ -58,14 +59,16 @@
 #' findSegments(cousinsDemo, k1 = 0.2, a = 5)
 #'
 #' @export
-findSegments = function(data, ids = NULL, k1, a) {
-  .data = prepForHMM(data, ids = ids)
+findSegments = function(data, ids = NULL, k1, a, prepped = FALSE) {
 
-  chroms = unique(.data$chrom)
-  Xchrom = length(chroms) == 1 && chroms == 23
-  sex = if(Xchrom) getsex(.data) else NULL
+  .data = if(prepped) data else prepForHMM(data, ids = ids)
+
+  # X and sex
+  Xchrom = attr(.data, "Xchrom")
+  sex = attr(.data, "sex")
 
   seglist = list()
+  chroms = unique(.data$chrom)
 
   # Loop through chroms
   for(chr in chroms) {

@@ -39,7 +39,6 @@ ibsState = function(g1, g2, Xchrom = FALSE) {
   ibs
 }
 
-
 getsex = function(data, ids = c("g1", "g2")) {
   sapply(ids, function(id) if(all(nchar(data[[id]]) == 1)) 1 else 2)
 }

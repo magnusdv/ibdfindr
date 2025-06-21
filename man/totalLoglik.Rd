@@ -4,7 +4,7 @@
 \alias{totalLoglik}
 \title{Total log-likelihood for observed data}
 \usage{
-totalLoglik(data, ids = NULL, k1, a, Xchrom = NULL, sex = NULL)
+totalLoglik(data, ids = NULL, k1, a, prepped = FALSE)
 }
 \arguments{
 \item{data}{Data frame with required columns \code{chrom}, \code{cm}, \code{a1} and \code{freq1}.}
@@ -13,10 +13,8 @@ totalLoglik(data, ids = NULL, k1, a, Xchrom = NULL, sex = NULL)
 
 \item{k1, a}{HMM parameters.}
 
-\item{Xchrom}{A logical, by default FALSE.}
-
-\item{sex}{A numeric of length 2, with entries 1 (=male) or 2 (=female).
-Ignored unless \code{Xhcrom = TRUE}.}
+\item{prepped}{A logical indicating if the input data has undergone internal
+prepping. Can be ignored by most users.}
 }
 \value{
 A number: The total log-likelihood of the data under the HMM model.

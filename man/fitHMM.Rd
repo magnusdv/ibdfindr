@@ -10,6 +10,7 @@ fitHMM(
   k1 = NULL,
   a = NULL,
   thompson = TRUE,
+  prepped = FALSE,
   verbose = FALSE,
   ...
 )
@@ -24,6 +25,9 @@ fitHMM(
 NULL (default), the parameter is estimated.}
 
 \item{thompson}{A logical indicating the optimisation method. (See Details.)}
+
+\item{prepped}{A logical indicating if the input data has undergone internal
+prepping. Can be ignored by most users.}
 
 \item{verbose}{A logical indicating whether to print information during the
 optimisation.}

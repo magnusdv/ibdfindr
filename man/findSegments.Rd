@@ -4,7 +4,7 @@
 \alias{findSegments}
 \title{Identify IBD segments}
 \usage{
-findSegments(data, ids = NULL, k1, a)
+findSegments(data, ids = NULL, k1, a, prepped = FALSE)
 }
 \arguments{
 \item{data}{Data frame with required columns \code{chrom}, \code{cm}, \code{a1} and \code{freq1}.}
@@ -12,6 +12,9 @@ findSegments(data, ids = NULL, k1, a)
 \item{ids}{Genotype columns (default: last 2 columns).}
 
 \item{k1, a}{HMM parameters. See \code{\link[=fitHMM]{fitHMM()}} for how to estimate these.}
+
+\item{prepped}{A logical indicating if the input data has undergone internal
+prepping. Can be ignored by most users.}
 }
 \value{
 Data frame with IBD segments.

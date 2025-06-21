@@ -27,20 +27,23 @@
 #' @export
 findIBD = function(data, ids = NULL, k1 = NULL, a = NULL, verbose = TRUE)  {
 
-  params = fitHMM(data, ids = ids, k1 = k1, a = a, verbose = verbose)
+  .data = prepForHMM(data, ids = ids)
+  ids = attr(.data, "ids")
+
+  params = fitHMM(.data, k1 = k1, a = a, prepped = TRUE, verbose = verbose)
 
   if(verbose) {
     cat(sprintf("Fitting HMM done:\n  k1 = %.3f, a = %.3f\n", params$k1, params$a))
     cat("Finding IBD segments...")
   }
 
-  segs = findSegments(data, params$ids, params$k1, params$a)
+  segs = findSegments(.data, k1 = params$k1, a = params$a, prepped = TRUE)
   if(verbose) {
     cat("done\n ", nrow(segs), "segments found\n")
     cat("Calculating IBD posteriors...")
   }
 
-  post = ibdPosteriors(data, params$ids, params$k1, params$a)
+  post = ibdPosteriors(.data, k1 = params$k1, a = params$a, prepped = TRUE)
   if(verbose) {
     cat("done\n")
   }

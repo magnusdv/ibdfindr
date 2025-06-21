@@ -19,6 +19,8 @@
 #' @param k1,a Numeric HMM parameters. Supplying a value fixes the parameter; if
 #'   NULL (default), the parameter is estimated.
 #' @param thompson A logical indicating the optimisation method. (See Details.)
+#' @param prepped A logical indicating if the input data has undergone internal
+#'   prepping. Can be ignored by most users.
 #' @param verbose A logical indicating whether to print information during the
 #'   optimisation.
 #' @param ... Additional arguments passed to the `control` parameter of
@@ -37,17 +39,18 @@
 #' @importFrom stats optim optimise
 #' @importFrom forrel ibdEstimate
 #' @export
-fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE, verbose = FALSE, ...) {
+fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE,
+                  prepped = FALSE, verbose = FALSE, ...) {
 
-  .data = prepForHMM(data, ids = ids)
+  .data = if(prepped) data else prepForHMM(data, ids = ids)
 
   # Initial parameter values
   k1_init = k1 %||% 0.5
   a_init = a %||% 5
 
   # X and sex
-  Xchrom = all(.data$chrom == 23)
-  sex = if(Xchrom) getsex(.data) else NULL
+  Xchrom = attr(.data, "Xchrom")
+  sex = attr(.data, "sex")
 
   if(verbose) {
     if(Xchrom)
@@ -63,13 +66,13 @@ fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE, verbos
   }
   if(!is.null(k1) && is.null(a)) {
     if(verbose) cat("Optimising `a` conditional on k1 =", k1, "\n")
-    fn01 = function(a) -totalLoglik(.data, k1 = k1, a = a, Xchrom = Xchrom, sex = sex)
+    fn01 = function(a) -totalLoglik(.data, k1 = k1, a = a, prepped = TRUE)
     res = optimise(fn01, interval = c(0.001, 100), tol = 0.001)
     return(list(k1 = k1, a = res$minimum))
   }
   if(is.null(k1) && !is.null(a)) {
     if(verbose) cat("Optimising `k1` conditional on a =", a, "\n")
-    fn02 = function(k1) -totalLoglik(.data, k1 = k1, a = a, Xchrom = Xchrom, sex = sex)
+    fn02 = function(k1) -totalLoglik(.data, k1 = k1, a = a, prepped = TRUE)
     res = optimise(fn02, interval = c(0.001, 0.999), tol = 0.001)
     return(list(k1 = res$minimum, a = a))
   }
@@ -82,7 +85,7 @@ fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE, verbos
 
   # X chromosome
   if(Xchrom) {
-    fnx = function(p) -totalLoglik(.data, k1 = p[1], a = p[2], Xchrom = TRUE, sex = sex)
+    fnx = function(p) -totalLoglik(.data, k1 = p[1], a = p[2], prepped = TRUE)
     res = optim(c(k1 = k1_init, a = a_init), fnx, method = "L-BFGS-B",
                 lower = c(0.001,0.001), upper = c(0.999, 100), control = control)
     return(as.list(res$par))
@@ -103,14 +106,14 @@ fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE, verbos
     }
 
     # Optimise `a` with k1 fixed
-    fn1 = function(a) -totalLoglik(.data, k1 = k1, a = a)
+    fn1 = function(a) -totalLoglik(.data, k1 = k1, a = a, prepped = TRUE)
     res = optimise(fn1, interval = c(.01, 100), tol = 0.001)  # a bit faster than `optim`
     return(list(k1 = k1, a = res$minimum))
   }
 
   # Autosomal method 2: optimise k1 and a together
 
-  fn2 = function(p) -totalLoglik(.data, k1 = p[1], a = p[2])
+  fn2 = function(p) -totalLoglik(.data, k1 = p[1], a = p[2], prepped = TRUE)
   res = optim(c(k1 = k1_init, a = a_init), fn2, method =  "L-BFGS-B",
               lower = c(0.001,0.001), upper = c(0.999, 100), control = control)
   as.list(res$par)
