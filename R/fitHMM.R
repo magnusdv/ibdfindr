@@ -91,9 +91,6 @@ fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE,
     return(as.list(res$par))
   }
 
-  if(verbose) {
-    cat("Thompson estimation:", thompson, "\n")
-  }
   # Autosomal method 1: thompson optimisation of k1
 
   if(thompson) {
@@ -101,7 +98,8 @@ fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE,
     khat = ibdEstimate(s, verbose = FALSE)[1, 4:6] |> as.numeric()
     k1 = khat[2]
     if(verbose) {
-      cat(sprintf("Estimated kappa: (k0, k1, k2) = (%s)\n", toString(round(khat,3))))
+      cat(sprintf("Thompson estimation of `k1`:\n  (k0, k1, k2) = (%s)\n",
+                  toString(round(khat,3))))
       cat("Optimising `a` conditional on k1 =", round(khat[2],3), "\n")
     }
 
@@ -113,6 +111,10 @@ fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE,
 
   # Autosomal method 2: optimise k1 and a together
 
+  if(verbose) {
+      cat("Optimising `k1` and `a` together\n",
+          sprintf(" start values: k1 = %g, a = %g\n", k1_init, a_init))
+  }
   fn2 = function(p) -totalLoglik(.data, k1 = p[1], a = p[2], prepped = TRUE)
   res = optim(c(k1 = k1_init, a = a_init), fn2, method =  "L-BFGS-B",
               lower = c(0.001,0.001), upper = c(0.999, 100), control = control)

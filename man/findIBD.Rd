@@ -4,7 +4,7 @@
 \alias{findIBD}
 \title{All-in-one workflow for finding IBD segments}
 \usage{
-findIBD(data, ids = NULL, k1 = NULL, a = NULL, verbose = TRUE)
+findIBD(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{data}{Data frame with required columns \code{chrom}, \code{cm}, \code{a1} and \code{freq1}
@@ -12,7 +12,10 @@ findIBD(data, ids = NULL, k1 = NULL, a = NULL, verbose = TRUE)
 
 \item{ids}{Genotype columns (default: last 2 columns).}
 
-\item{k1, a}{HMM parameters; estimated by \code{\link[=fitHMM]{fitHMM()}} if left empty.}
+\item{k1, a}{HMM parameters passed on to \code{\link[=fitHMM]{fitHMM()}}. Supplying a value fixes
+the parameter; if NULL (default), the parameter is estimated.}
+
+\item{thompson}{A logical passed on to \code{\link[=fitHMM]{fitHMM()}}.}
 
 \item{verbose}{A logical, by default TRUE.}
 }

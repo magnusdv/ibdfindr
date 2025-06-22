@@ -13,7 +13,8 @@ so by fitting a continuous-time hidden Markov model (HMM) to the data.
 
 ## Installation
 
-You can install the development version of **ibdfindr** from GitHub:
+While **ibdfindr** is not on CRAN yet, you may install the development
+version from GitHub:
 
 ``` r
 remotes::install_github("magnusdv/ibdfindr")
@@ -43,14 +44,18 @@ head(cousinsDemo)
 ```
 
 The function `findIBD()` conveniently wraps the key steps of the
-package: it fits a HMM, identifies IBD segments, and computes
-marker-wise posterior IBD probabilities.
+package:
+
+- Fit a continuous-time HMM to the data (`fitHMM()`)
+- Find the most likely set of IBD segments (`findSegments()`)
+- Calculate posterior IBD probabilities at the marker loci
+  (`ibdPosteriors()`)
 
 ``` r
 ibd = findIBD(cousinsDemo)
 #> Chromosome type: autosomal
-#> Thompson estimation: TRUE 
-#> Estimated kappa: (k0, k1, k2) = (0.857, 0.143, 0)
+#> Thompson estimation of `k1`:
+#>   (k0, k1, k2) = (0.857, 0.143, 0)
 #> Optimising `a` conditional on k1 = 0.143 
 #> Fitting HMM done:
 #>   k1 = 0.143, a = 5.025

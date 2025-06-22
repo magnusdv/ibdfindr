@@ -24,7 +24,7 @@ The goal of **ibdfindr** is to detect genomic regions shared *identical by desce
 
 ## Installation
 
-You can install the development version of **ibdfindr** from GitHub:
+While **ibdfindr** is not on CRAN yet, you may install the development version from GitHub:
 
 ```{r eval = F}
 remotes::install_github("magnusdv/ibdfindr")
@@ -41,7 +41,12 @@ As an example we consider the built-in dataset `cousinsDemo`, which contains alm
 head(cousinsDemo)
 ```
 
-The function `findIBD()` conveniently wraps the key steps of the package: it fits a HMM, identifies IBD segments, and computes marker-wise posterior IBD probabilities. 
+The function `findIBD()` conveniently wraps the key steps of the package: 
+
+* Fit a continuous-time HMM to the data (`fitHMM()`)
+* Find the most likely set of IBD segments (`findSegments()`)
+* Calculate posterior IBD probabilities at the marker loci (`ibdPosteriors()`)
+
 ```{r}
 ibd = findIBD(cousinsDemo)
 ```

@@ -9,7 +9,9 @@
 #' @param data Data frame with required columns `chrom`, `cm`, `a1` and `freq1`
 #'   (case insensitive).
 #' @param ids Genotype columns (default: last 2 columns).
-#' @param k1,a HMM parameters; estimated by [fitHMM()] if left empty.
+#' @param k1,a HMM parameters passed on to [fitHMM()]. Supplying a value fixes
+#'   the parameter; if NULL (default), the parameter is estimated.
+#' @param thompson A logical passed on to [fitHMM()].
 #' @param verbose A logical, by default TRUE.
 #'
 #' @returns A list with the following elements:
@@ -25,12 +27,13 @@
 #' plotIBD(ibd)
 #'
 #' @export
-findIBD = function(data, ids = NULL, k1 = NULL, a = NULL, verbose = TRUE)  {
+findIBD = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE,
+                   verbose = TRUE)  {
 
   .data = prepForHMM(data, ids = ids)
-  ids = attr(.data, "ids")
 
-  params = fitHMM(.data, k1 = k1, a = a, prepped = TRUE, verbose = verbose)
+  params = fitHMM(.data, k1 = k1, a = a, prepped = TRUE, thompson = thompson,
+                  verbose = verbose)
 
   if(verbose) {
     cat(sprintf("Fitting HMM done:\n  k1 = %.3f, a = %.3f\n", params$k1, params$a))
@@ -48,5 +51,6 @@ findIBD = function(data, ids = NULL, k1 = NULL, a = NULL, verbose = TRUE)  {
     cat("done\n")
   }
 
-  list(k1 = params$k1, a = params$a, segments = segs, posteriors = post)
+  list(ids = attr(.data, "ids"), k1 = params$k1, a = params$a,
+       segments = segs, posteriors = post)
 }
