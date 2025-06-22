@@ -39,7 +39,11 @@ ibsState = function(g1, g2, Xchrom = FALSE) {
   ibs
 }
 
+# Deduce sex from X genotypes: Hemizygous -> male
 getsex = function(data, ids = c("g1", "g2")) {
+  if(!all(ids %in% names(data)))
+    stop2("Genotype column not found: ", setdiff(ids, names(data)))
+
   sapply(ids, function(id) if(all(nchar(data[[id]]) == 1)) 1 else 2)
 }
 
@@ -90,16 +94,20 @@ chromNumber = function(x) {
 }
 
 #' @importFrom pedtools singletons setSNPs setGenotype
-asSingletons = function(data, ids = NULL, prep = TRUE) {
-  ids = ids %||% utils::tail(names(data), 2)
+asSingletons = function(data, ids = NULL, prepped = FALSE) {
 
-  if(prep)
-    data = prepForHMM(data, ids = ids)
+  .data = if(prepped) data else prepForHMM(data, ids = ids, keepOld = TRUE)
+  ids = attr(.data, "ids")
+  sex = attr(.data, "sex")
 
-  snpData = data.frame(CHROM = data$chrom, MARKER = data$marker, MB = data$cm,
-                       A1 = "1", A2 = "2", FREQ1 = data$freq1)
-  singletons(ids) |>
+  snpData = data.frame(CHROM = .data$chrom,
+                       MARKER = .data$marker,
+                       MB = .data$MB %||% .data$cm,
+                       A1 = "1", A2 = "2",
+                       FREQ1 = .data$freq1)
+
+  singletons(ids, sex = sex %||% 1) |>
     setSNPs(snpData = snpData) |>
-    setGenotype(ids = ids[1], geno = data$g1) |>
-    setGenotype(ids = ids[2], geno = data$g2)
+    setGenotype(ids = ids[1], geno = .data$g1) |>
+    setGenotype(ids = ids[2], geno = .data$g2)
 }

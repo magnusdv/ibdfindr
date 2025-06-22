@@ -94,7 +94,7 @@ fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE,
   # Autosomal method 1: thompson optimisation of k1
 
   if(thompson) {
-    s = asSingletons(.data, prep = FALSE)
+    s = asSingletons(.data, prepped = TRUE)
     khat = ibdEstimate(s, verbose = FALSE)[1, 4:6] |> as.numeric()
     k1 = khat[2]
     if(verbose) {

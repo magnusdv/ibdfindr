@@ -14,10 +14,10 @@ prepForHMM = function(data, ids = NULL, keepOld = FALSE) {
     ids = utils::tail(names(data), 2)
 
   if(length(ids) != 2)
-    stop2("Expected 2 genotype columns, got ", length(ids))
+    stop2("Argument `ids` must have length exactly 2: ", ids)
 
   if(!all(ids %in% names(data)))
-    stop2("Genotype columns not found: ", setdiff(ids, names(data)))
+    stop2("Genotype column not found: ", setdiff(ids, names(data)))
 
   if(any(tolower(ids) %in% required))
     stop2("Illegal genotype column: ", intersect(tolower(ids), required))
@@ -48,7 +48,8 @@ prepForHMM = function(data, ids = NULL, keepOld = FALSE) {
   if(!Xchrom && any(chromNum == 23))
     stop2("Cannot mix chromosome 23 (X) with autosomes")
 
-  sex = if(Xchrom) getsex(data) else NULL
+  # Deduce sex if X
+  sex = if(Xchrom) getsex(data, ids = ids) else NULL
 
   # Sort
   data = data[order(data$chrom, data$cm), , drop = FALSE]
