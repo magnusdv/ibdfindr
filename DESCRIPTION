@@ -16,7 +16,8 @@ Depends:
 Imports: 
     forrel,
     ggplot2,
-    pedtools
+    pedtools,
+    ibdsim2
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

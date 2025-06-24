@@ -11,10 +11,10 @@ sim = ibdsim(x, seed = 1)
 
 # True IBD sharing
 trueSegs = findPattern(sim, list(carriers = ids))
-karyoHaploid(s)
+karyoHaploid(trueSegs)
 
 # Simulate genotypes
-y = profileSimIBD(x, sim, ids = ids)
+y = profileSimIBD(x, sim, ids = ids, seed = 1)
 g = getGenotypes(y, ids = ids)
 
 # Dataset with annotation and genotypes

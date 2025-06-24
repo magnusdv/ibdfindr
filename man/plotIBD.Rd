@@ -4,7 +4,14 @@
 \alias{plotIBD}
 \title{Plot IBD segments and posteriors}
 \usage{
-plotIBD(x, segments = NULL, chrom = NULL, ncol = NULL)
+plotIBD(
+  x,
+  segments = NULL,
+  chrom = NULL,
+  ncol = NULL,
+  title = NA,
+  base_size = 12
+)
 }
 \arguments{
 \item{x}{A data frame, typically produced by \code{\link[=ibdPosteriors]{ibdPosteriors()}}, or a list
@@ -17,6 +24,10 @@ produced by \code{\link[=findIBD]{findIBD()}}.}
 
 \item{ncol}{Number of columns in the plot. By default a suitable layout is
 chosen automatically.}
+
+\item{title}{Plot title. Generated automatically if \code{NA} (default).}
+
+\item{base_size}{Base font size.}
 }
 \value{
 A \code{ggplot2} plot.

@@ -99,10 +99,11 @@ asSingletons = function(data, ids = NULL, prepped = FALSE) {
   .data = if(prepped) data else prepForHMM(data, ids = ids, keepOld = TRUE)
   ids = attr(.data, "ids")
   sex = attr(.data, "sex")
+  mb = if("MB" %in% names(.data)) .data$MB else .data$cm
 
   snpData = data.frame(CHROM = .data$chrom,
                        MARKER = .data$marker,
-                       MB = .data$MB %||% .data$cm,
+                       MB = mb,
                        A1 = "1", A2 = "2",
                        FREQ1 = .data$freq1)
 
@@ -110,4 +111,31 @@ asSingletons = function(data, ids = NULL, prepped = FALSE) {
     setSNPs(snpData = snpData) |>
     setGenotype(ids = ids[1], geno = .data$g1) |>
     setGenotype(ids = ids[2], geno = .data$g2)
+}
+
+#' @importFrom pedtools getMap getLocusAttributes getGenotypes typedMembers
+#' @importFrom ibdsim2 loadMap convertPos
+getSNPdata = function(x) {
+  snpmap = getMap(x)
+
+  chrs = unique.default(snpmap$CHROM)
+  Xchrom = length(chrs) == 1 && chrs %in% c("X", 23)
+  gmap = loadMap("decode19", chrom = chrs)
+
+  snpmap$CM = convertPos(chrom = snpmap$CHROM, Mb = snpmap$MB, map = gmap,
+                               sex = if(Xchrom) "female" else "average")
+
+  als = getLocusAttributes(x, attribs = "alleles", simplify = TRUE)
+  if(!length(als))
+    stop2("No attached markers")
+  if(!all(lengths(als) == 2))
+    stop2("Some markers are not SNPs")
+  alsmat = do.call(rbind, als)
+  colnames(alsmat) = c("A1", "A2")
+
+  freq1 = sapply(x$MARKERS, function(m) attr(m, "afreq")[1])
+
+  g = getGenotypes(x, ids = typedMembers(x)) |> t.default()
+
+  cbind(snpmap, alsmat, FREQ1 = freq1, g)
 }
