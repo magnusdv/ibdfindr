@@ -4,3 +4,5 @@
 ^data-raw$
 ^Rprof.out$
 ^README\.Rmd$
+^notes
+
