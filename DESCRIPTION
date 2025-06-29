@@ -24,3 +24,6 @@ RoxygenNote: 7.3.2
 LazyData: true
 URL: https://github.com/magnusdv/ibdfindr
 BugReports: https://github.com/magnusdv/ibdfindr/issues
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
