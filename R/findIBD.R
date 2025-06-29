@@ -29,7 +29,7 @@
 #' @export
 findIBD = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE,
                    verbose = TRUE)  {
-
+  st = Sys.time()
   .data = prepForHMM(data, ids = ids)
 
   params = fitHMM(.data, k1 = k1, a = a, prepped = TRUE, thompson = thompson,
@@ -41,14 +41,18 @@ findIBD = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE,
   }
 
   segs = findSegments(.data, k1 = params$k1, a = params$a, prepped = TRUE)
+
   if(verbose) {
-    cat("done\n ", nrow(segs), "segments found\n")
+    ns = if(is.null(segs)) 0 else nrow(segs)
+    tl = if(is.null(segs)) 0 else sum(segs$end - segs$start)
+    cat(sprintf("done:\n %d segments, in total %.2f cM\n", ns, tl))
     cat("Calculating IBD posteriors...")
   }
 
   post = ibdPosteriors(.data, k1 = params$k1, a = params$a, prepped = TRUE)
   if(verbose) {
     cat("done\n")
+    cat("Total time used:", format(Sys.time() - st, digits = 3), "\n")
   }
 
   list(ids = attr(.data, "ids"), k1 = params$k1, a = params$a,

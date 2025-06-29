@@ -14,7 +14,12 @@ trueSegs = findPattern(sim, list(carriers = ids))
 karyoHaploid(trueSegs)
 
 # Simulate genotypes
-y = profileSimIBD(x, sim, ids = ids, seed = 1)
+y = profileSimIBD(x, sim, ids = ids, seed = 1729)
+
+# Better coding of dataset
+#cousinsDemo = getSNPdata(y) |> as_tibble()
+#names(cousinsDemo)[8:9] = c("ID1", "ID2")
+
 g = getGenotypes(y, ids = ids)
 
 # Dataset with annotation and genotypes
@@ -22,7 +27,7 @@ cousinsDem = tibble(FORCE, ID1 = g[1, ], ID2 = g[2, ])
 
 # Add centiMorgan positions
 cm = convertPos(chrom = FORCE$CHROM, Mb = FORCE$MB)
-cousinsDem = cousinsDem |> add_column(CM = cm, .before = "A1")
+cousinsDemo = cousinsDemo |> add_column(CM = cm, .before = "A1")
 
 # Save dataset
 usethis::use_data(cousinsDemo, overwrite = TRUE)

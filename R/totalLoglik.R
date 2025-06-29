@@ -7,17 +7,21 @@
   # Initial state probabilities
   inits = c(nonIBD = 1 - k1, IBD = k1)
 
-  emiss = as.matrix(.data[c("emission0","emission1")])
+  trans = transitionProbs(d, k1, a)
+  emiss = cbind(.data$emission0, .data$emission1)
 
   # Forward - with logliks
   fwd = matrix(0, 2, n)
-  alpha      = inits * emiss[1,]
-  fwd[, 1]   = alpha / sum(alpha)
-  logc[1]    = log(sum(alpha))
+  alpha = inits * emiss[1,]
+  fwd[, 1] = alpha / sum(alpha)
+  logc[1] = log(sum(alpha))
+
+  if(n == 1)
+    return(logc[1])
 
   for(i in 2:n) {
-    tm = trans(d[i], k1, a)
-    alpha = (tm %*% fwd[,i-1]) * emiss[i,]
+    tt = trans[i, ] * fwd[, i-1]
+    alpha = c(tt[1] + tt[2], tt[3] + tt[4]) * emiss[i,]
     logc[i] = log(sum(alpha))
     fwd[,i] = alpha / sum(alpha)
   }
@@ -52,14 +56,9 @@ totalLoglik = function(data, ids = NULL, k1, a, prepped = FALSE) {
   Xchrom = attr(.data, "Xchrom")
   sex = attr(.data, "sex")
 
-  chroms = unique.default(.data$chrom)
-  logliks = numeric(length(chroms))
+  logliks = lapply(.data, function(chrdat)
+    .loglik(chrdat, k1, a, Xchrom = Xchrom, sex = sex)
+  )
 
-  # Loop through chroms
-  for(i in seq_along(chroms)) {
-    subdat = .data[.data$chrom == chroms[i], , drop  = FALSE]
-    logliks[i] = .loglik(subdat, k1, a, Xchrom = Xchrom, sex = sex)
-  }
-
-  sum(logliks)
+  sum(unlist(logliks))
 }

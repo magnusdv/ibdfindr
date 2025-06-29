@@ -20,10 +20,10 @@ prepping. Can be ignored by most users.}
 Data frame with IBD segments.
 }
 \description{
-Identify genomic segments shared identical-by-descent (IBD) between two individuals
-from SNP marker data. The underlying method uses a hidden Markov model (HMM) and
-the Viterbi algorithm to infer the most likely IBD state (0 = non-IBD, 1 = IBD)
-at each marker.
+Identify genomic segments shared identical-by-descent (IBD) between two
+individuals from SNP marker data. The underlying method uses a hidden Markov
+model (HMM) and the Viterbi algorithm to infer the most likely IBD state (0 =
+non-IBD, 1 = IBD) at each marker.
 }
 \examples{
 findSegments(cousinsDemo, k1 = 0.2, a = 5)

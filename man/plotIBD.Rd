@@ -10,12 +10,14 @@ plotIBD(
   chrom = NULL,
   ncol = NULL,
   title = NA,
-  base_size = 12
+  base_size = 12,
+  refSegs = NULL
 )
 }
 \arguments{
-\item{x}{A data frame, typically produced by \code{\link[=ibdPosteriors]{ibdPosteriors()}}, or a list
-produced by \code{\link[=findIBD]{findIBD()}}.}
+\item{x}{A list, typically produced with \code{\link[=findIBD]{findIBD()}}, containing data frames
+named \code{posteriors} and \code{segments}. Alternatively, \code{x} may be just the
+output of \code{\link[=ibdPosteriors]{ibdPosteriors()}}.}
 
 \item{segments}{A data frame with IBD segments, typically produced by
 \code{\link[=findSegments]{findSegments()}}.}
@@ -28,6 +30,10 @@ chosen automatically.}
 \item{title}{Plot title. Generated automatically if \code{NA} (default).}
 
 \item{base_size}{Base font size.}
+
+\item{refSegs}{(Optional) A data frame with true IBD segments, mostly for
+testing and validation purposes. If provided, these segments are plotted in
+blue.}
 }
 \value{
 A \code{ggplot2} plot.
@@ -42,5 +48,5 @@ plotIBD(ibd)
 
 }
 \seealso{
-\code{\link[=findSegments]{findSegments()}}, \code{\link[=ibdPosteriors]{ibdPosteriors()}}
+\code{\link[=findIBD]{findIBD()}}, \code{\link[=findSegments]{findSegments()}}, \code{\link[=ibdPosteriors]{ibdPosteriors()}}
 }

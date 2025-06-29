@@ -4,18 +4,21 @@
 # -------------------------------------------------------------------------
 
 
-# Transition matrix for two-state CT-HMM
-trans = function(d, k1, a) {
-  e = exp(-a * d)
-  matrix(c((1 - e)*(1 - k1) + e, (1 - e)*k1,
-           (1 - e)*(1 - k1),     (1 - e)*k1 + e),
-         2, 2, byrow = TRUE, dimnames = rep(list(c("nonIBD", "IBD")), 2))
+# Transition probabilities for two-state CT-HMM
+# (similar to Leutenegger et al 2003)
+# Output: Matrix with one row per step
+# Columns: 0->0, 0->1, 1->0, 1->1, where 0 = nonIBD, 1 = IBD
+transitionProbs = function(dvec, k1, a) {
+  A = exp(-a * dvec)
+  cbind((1-A) * (1 - k1) + A,
+        (1-A) * k1,
+        (1-A) * (1 - k1),
+        (1-A) * k1 + A)
 }
 
 
 # Emission probs P(G1, G2 | IBD) for given allele freqs (p, q).
 # Returns array with IBD = 0/1 in third dimension.
-# TODO: Possible to simplify using IBS status?
 emission = function(p, Xchrom = FALSE, sex = NULL) {
   fr = c(p, q <- 1-p)
   hw = c(p^2, 2*p*q, q^2)

@@ -6,6 +6,7 @@
   n = nrow(.data)
   d = c(0, diff(.data$cm)) / 100
 
+  trans = transitionProbs(d, k1, a)
   emiss = as.matrix(.data[c("emission0","emission1")])
 
   # Forward-backward algorithm ----------------------------------------------
@@ -17,16 +18,18 @@
   fwd = matrix(0, 2, n)
   fwd[, 1] = (inits * emiss[1,]) |> nrm()
 
-  for(i in 2:n) {
-    tm = trans(d[i], k1, a)
-    fwd[ ,i] = ((tm %*% fwd[,i-1]) * emiss[i,]) |> nrm()
+  idxF = if(n>1) 2:n else integer(0)
+  for(i in idxF) {
+    tt = trans[i, ] * fwd[, i-1]
+    fwd[,i] = (c(tt[1] + tt[2], tt[3] + tt[4]) * emiss[i,]) |> nrm()
   }
 
   # Backward
   bwd = matrix(1, 2, n)
-  for(i in (n-1):1) {
-    tm = trans(d[i+1], k1, a)
-    bwd[,i] = (tm %*% (emiss[i+1,] * bwd[,i+1])) |> nrm()
+  idxB = if(n>1) (n-1):1 else integer(0)
+  for(i in idxB) {
+    tt = trans[i+1, ] * emiss[i+1,] * bwd[,i+1]
+    bwd[,i] = c(tt[1] + tt[2], tt[3] + tt[4]) |> nrm()
   }
 
   # Posterior IBD probs
@@ -59,23 +62,15 @@ ibdPosteriors = function(data, ids = NULL, k1, a, prepped = FALSE) {
 
   .data = if(prepped) data else prepForHMM(data, ids = ids)
 
-  # X and sex
   Xchrom = attr(.data, "Xchrom")
   sex = attr(.data, "sex")
 
-  # Initialize output objects
-  dflist = list()
-
   # Loop through chroms
-  chroms = unique.default(.data$chrom)
-  for(chr in chroms) {
-    subdat = .data[.data$chrom == chr, , drop  = FALSE]
-    post = .ibdPosteriors(subdat, k1, a, Xchrom = Xchrom, sex = sex)
-
-    # Add column with posteriors
-    subdat$post = post
-    dflist[[chr]] = subdat
-  }
+  dflist = lapply(.data, function(chrdat) {
+    post = .ibdPosteriors(chrdat, k1, a, Xchrom = Xchrom, sex = sex)
+    chrdat$post = post
+    chrdat
+  })
 
   res = do.call(rbind, dflist)
   rownames(res) = NULL

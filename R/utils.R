@@ -93,24 +93,31 @@ chromNumber = function(x) {
   num
 }
 
-#' @importFrom pedtools singletons setSNPs setGenotype
+
+#' @importFrom pedtools singletons setSNPs
 asSingletons = function(data, ids = NULL, prepped = FALSE) {
 
   .data = if(prepped) data else prepForHMM(data, ids = ids, keepOld = TRUE)
+
   ids = attr(.data, "ids")
   sex = attr(.data, "sex")
+
+  .data = do.call(rbind, .data)
+
   mb = if("MB" %in% names(.data)) .data$MB else .data$cm
+  gcols = .data[paste0("g", seq_along(ids))]
+  names(gcols) = ids
 
   snpData = data.frame(CHROM = .data$chrom,
                        MARKER = .data$marker,
                        MB = mb,
                        A1 = "1", A2 = "2",
-                       FREQ1 = .data$freq1)
+                       FREQ1 = .data$freq1,
+                       gcols,
+                       check.names = FALSE)
 
   singletons(ids, sex = sex %||% 1) |>
-    setSNPs(snpData = snpData) |>
-    setGenotype(ids = ids[1], geno = .data$g1) |>
-    setGenotype(ids = ids[2], geno = .data$g2)
+    setSNPs(snpData = snpData)
 }
 
 #' @importFrom pedtools getMap getLocusAttributes getGenotypes typedMembers

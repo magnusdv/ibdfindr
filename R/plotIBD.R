@@ -1,8 +1,9 @@
 
 #' Plot IBD segments and posteriors
 #'
-#' @param x A data frame, typically produced by [ibdPosteriors()], or a list
-#'   produced by [findIBD()].
+#' @param x A list, typically produced with [findIBD()], containing data frames
+#'   named `posteriors` and `segments`. Alternatively, `x` may be just the
+#'   output of [ibdPosteriors()].
 #' @param segments A data frame with IBD segments, typically produced by
 #'   [findSegments()].
 #' @param chrom A vector of chromosomes to plot (default: all).
@@ -10,10 +11,13 @@
 #'   chosen automatically.
 #' @param title Plot title. Generated automatically if `NA` (default).
 #' @param base_size Base font size.
+#' @param refSegs (Optional) A data frame with true IBD segments, mostly for
+#'   testing and validation purposes. If provided, these segments are plotted in
+#'   blue.
 #'
 #' @returns A `ggplot2` plot.
 #'
-#' @seealso [findSegments()], [ibdPosteriors()]
+#' @seealso [findIBD()], [findSegments()], [ibdPosteriors()]
 #'
 #' @examples
 #' x = subset(cousinsDemo, CHROM %in% 3:4)
@@ -23,7 +27,7 @@
 #' @importFrom ggplot2 aes
 #' @export
 plotIBD = function(x, segments = NULL, chrom = NULL, ncol = NULL,
-                   title = NA, base_size = 12) {
+                   title = NA, base_size = 12, refSegs = NULL) {
   if(is.data.frame(x)) {
     data = x
     ids = NULL
@@ -42,6 +46,7 @@ plotIBD = function(x, segments = NULL, chrom = NULL, ncol = NULL,
   if(!is.null(chrom)) {
     data = data[data$chrom %in% chrom, , drop = FALSE]
     segments = segments[segments$chrom %in% chrom, , drop = FALSE] # NULL ok
+    refSegs = refSegs[refSegs[,1] %in% chrom, , drop = FALSE] # NULL ok
   }
   chrs = unique(data$chrom)
   ncol = ncol %||% min(4, ceiling(sqrt(length(chrs))))
@@ -88,10 +93,17 @@ plotIBD = function(x, segments = NULL, chrom = NULL, ncol = NULL,
       data = as.data.frame(segments), size = 1.5, color = "red",
       aes(x = start, xend = end, y = -0.15, yend = -0.15))
   }
+
+  if(!is.null(refSegs)) {
+    p = p + ggplot2::geom_segment(
+      data = refSegs, col = "blue", linewidth = 1.5,
+      ggplot2::aes(x = startCM, xend = endCM, y = .2, yend = .2))
+  }
+
   p
 }
 
 
 utils::globalVariables(
-  c("cm","ibs","post","start","end")
+  c("cm","ibs","post","start","end", "startCM", "endCM")
 )

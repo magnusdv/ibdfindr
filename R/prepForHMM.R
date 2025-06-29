@@ -1,3 +1,4 @@
+
 prepForHMM = function(data, ids = NULL, keepOld = FALSE) {
 
   # Check required columns
@@ -33,7 +34,8 @@ prepForHMM = function(data, ids = NULL, keepOld = FALSE) {
   names(data$freq1) = data$marker
 
   # Remove missing data
-  data = data[!is.na(data$chrom) & !is.na(data$cm) & !is.na(data$a1) & !is.na(data$freq1), , drop = FALSE]
+  good = !is.na(data$chrom) & !is.na(data$cm) & !is.na(data$a1) & !is.na(data$freq1)
+  data = data[good, , drop = FALSE]
 
   # Convert to numeric chrom labels
   chromNum = chromNumber(data$chrom)
@@ -69,6 +71,9 @@ prepForHMM = function(data, ids = NULL, keepOld = FALSE) {
                               Xchrom = Xchrom, sex = sex)
   data$emission0 = emissionProbs[1,]
   data$emission1 = emissionProbs[2,]
+
+  # Split in separate chroms
+  data = split(data, data$chrom)
 
   # Return with attributes
   structure(data, ids = ids, Xchrom = Xchrom, sex = sex)
