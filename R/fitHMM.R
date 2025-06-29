@@ -1,17 +1,19 @@
 #' Fit a Hidden Markov Model to genotype data
 #'
-#' This function fits a continuous-time HMM to the given genotype data. It does
-#' so by optimising the parameters `k1` (the probability of being in an IBD
-#' state) and the transition rate `a` to maximise the total log-likelihood.
+#' This function fits a continuous-time HMM to the provided genotype data, by
+#' optimising the parameters `k1` (the probability of being in an IBD state) and
+#' `a` (the transition rate) to maximise the total log-likelihood.
 #'
-#' If `thompson = TRUE` (default), the parameter `k1` is estimated first, using
-#' the standard maximum-likelihood approach for estimating pairwise relatedness
-#' coefficients (first described by Thompson 1975). The actual work is done by a
-#' call to [forrel::ibdEstimate()]. The parameter `a` is subsequently estimated
-#' with `optim`.
+#' By default (`thompson = FALSE`) both parameters `k1` and `a` are optimised
+#' together, using [stats::optimise()].
 #'
-#' If `thompson = FALSE`, both parameters `k1` and `a` are optimised together.
-#' (This is the only method for X chromosomal data.)
+#' If `thompson = TRUE`, then `k1` is estimated first, using the
+#' maximum-likelihood approach for pairwise relatedness coefficients described
+#' by Thompson (1975). (Note that, although this method was originally developed
+#' for unlinked markers, it yields unbiased estimates also with linked markers.)
+#' The estimation of `k1` is performed internally by calling
+#' [forrel::ibdEstimate()]. Subsequently, the parameter `a` is estimated
+#' conditional on the `k1` value.
 #'
 #' @param data Data frame with required columns `chrom`, `cm`, `a1` and `freq1`
 #'   (case insensitive).
@@ -39,7 +41,7 @@
 #' @importFrom stats optim optimise
 #' @importFrom forrel ibdEstimate
 #' @export
-fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE,
+fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = FALSE,
                   prepped = FALSE, verbose = FALSE, ...) {
 
   .data = if(prepped) data else prepForHMM(data, ids = ids)
@@ -54,71 +56,65 @@ fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE,
 
   if(verbose) {
     if(Xchrom)
-      cat(sprintf("Chromosome type: X (%s)\n", paste(c("male", "female")[sex], collapse="/")))
-    else
-      cat("Chromosome type: autosomal\n")
-  }
-  # If `k1` or `a` are provided: estimate the other -------------------------
+      chrtype = sprintf("X (%s)", paste(c("male", "female")[sex], collapse="/"))
+     else
+       chrtype = "autosomal"
 
-  if(!is.null(k1) && !is.null(a)) {
-    if(verbose) cat("Nothing to do; parameters provided: k1 =", k1, ", a =", a, "\n")
-    return(list(k1 = k1, a = a))
-  }
-  if(!is.null(k1) && is.null(a)) {
-    if(verbose) cat("Optimising `a` conditional on k1 =", k1, "\n")
-    fn01 = function(a) -totalLoglik(.data, k1 = k1, a = a, prepped = TRUE)
-    res = optimise(fn01, interval = c(0.001, 100), tol = 0.001)
-    return(list(k1 = k1, a = res$minimum))
-  }
-  if(is.null(k1) && !is.null(a)) {
-    if(verbose) cat("Optimising `k1` conditional on a =", a, "\n")
-    fn02 = function(k1) -totalLoglik(.data, k1 = k1, a = a, prepped = TRUE)
-    res = optimise(fn02, interval = c(0.001, 0.999), tol = 0.001)
-    return(list(k1 = res$minimum, a = a))
+    cat("Chromosome type:", chrtype, "\n")
+    cat("Fitting HMM parameters...\n")
   }
 
+  # Optional: Thompson estimation of k1
+  if(thompson && is.null(k1)) {
 
-  # Otherwise: Estimate both ------------------------------------------------
+    if(Xchrom)
+      stop2("Thompson estimation of `k1` is not implemented for X chromosome data.")
 
-  # Control parameters for `optim`
-  control = list(...)
-
-  # X chromosome
-  if(Xchrom) {
-    fnx = function(p) -totalLoglik(.data, k1 = p[1], a = p[2], prepped = TRUE)
-    res = optim(c(k1 = k1_init, a = a_init), fnx, method = "L-BFGS-B",
-                lower = c(0.001,0.001), upper = c(0.999, 100), control = control)
-    return(as.list(res$par))
-  }
-
-  # Autosomal method 1: thompson optimisation of k1
-
-  if(thompson) {
     s = asSingletons(.data, prepped = TRUE)
     khat = ibdEstimate(s, verbose = FALSE)[1, 4:6] |> as.numeric()
     k1 = khat[2]
-    if(verbose) {
-      cat(sprintf("Thompson estimation of `k1`:\n  (k0, k1, k2) = (%s)\n",
+
+    if(verbose)
+      cat(sprintf("  Thompson estimate: (k0, k1, k2) = (%s)\n",
                   toString(round(khat,3))))
-      cat("Optimising `a` conditional on k1 =", round(khat[2],3), "\n")
-    }
-
-    # Optimise `a` with k1 fixed
-    fn1 = function(a) -totalLoglik(.data, k1 = k1, a = a, prepped = TRUE)
-    res = optimise(fn1, interval = c(.01, 100), tol = 0.001)  # a bit faster than `optim`
-    return(list(k1 = k1, a = res$minimum))
   }
 
-  # Autosomal method 2: optimise k1 and a together
+  if(!is.null(k1) && !pedtools:::isNumber(k1, 0, 1-1e-6))
+    stop2("`k1` must be a number in the interval `[0, 1)`: ", k1)
 
-  if(verbose) {
-      cat("Optimising `k1` and `a` together\n",
-          sprintf(" start values: k1 = %g, a = %g\n", k1_init, a_init))
+  if(!is.null(a) && !pedtools:::isNumber(a, 1e-6))
+      stop2("`a` must be a positive number: ", a)
+
+  # Estimate remaining parameter, of both jointly -----------------------------
+
+  if(is.null(k1) && is.null(a)) {
+    if(verbose) cat("  Optimising `k1` and `a` jointly\n")
+
+    fn2 = function(p) -totalLoglik(.data, k1 = p[1], a = p[2], prepped = TRUE)
+    res = optim(c(k1 = k1_init, a = a_init), fn2, method =  "L-BFGS-B",
+                lower = c(0.001, 0.001), upper = c(0.999, 100), control = list(...))
+    respar = as.list(res$par)
+    k1 = respar$k1
+    a = respar$a
   }
-  fn2 = function(p) -totalLoglik(.data, k1 = p[1], a = p[2], prepped = TRUE)
-  res = optim(c(k1 = k1_init, a = a_init), fn2, method =  "L-BFGS-B",
-              lower = c(0.001,0.001), upper = c(0.999, 100), control = control)
-  as.list(res$par)
+  else if(!is.null(k1) && is.null(a)) {
+    if(verbose) cat("  Optimising `a` conditional on k1 =", k1, "\n")
+
+    fn01 = function(a) -totalLoglik(.data, k1 = k1, a = a, prepped = TRUE)
+    res = optimise(fn01, interval = c(0.001, 100), tol = 0.001)
+    a = res$minimum
+  }
+  else if(is.null(k1) && !is.null(a)) {
+    if(verbose) cat("  Optimising `k1` conditional on a =", a, "\n")
+
+    fn02 = function(k1) -totalLoglik(.data, k1 = k1, a = a, prepped = TRUE)
+    res = optimise(fn02, interval = c(0.001, 0.999), tol = 0.001)
+    k1 = res$minimum
+  }
+
+  # Report and return
+  if(verbose) cat(sprintf("  k1 = %.3f, a = %.3f\n", k1, a))
+  list(k1 = k1, a = a)
 }
 
 

@@ -63,7 +63,9 @@
 #' findSegments(cousinsDemo, k1 = 0.2, a = 5)
 #'
 #' @export
-findSegments = function(data, ids = NULL, k1, a, prepped = FALSE) {
+findSegments = function(data, ids = NULL, k1, a, prepped = FALSE, verbose = FALSE) {
+  if(verbose)
+     cat("Finding IBD segments...\n")
 
   .data = if(prepped) data else prepForHMM(data, ids = ids)
 
@@ -92,5 +94,12 @@ findSegments = function(data, ids = NULL, k1, a, prepped = FALSE) {
 
   res = do.call(rbind, seglist)
   rownames(res) = NULL
+
+  if(verbose) {
+    ns = if(is.null(res)) 0 else nrow(res)
+    tl = if(is.null(res)) 0 else sum(res$end - res$start)
+    cat(sprintf("  %d segments (total length: %.2f cM)\n", ns, tl))
+  }
+
   res
 }

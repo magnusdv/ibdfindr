@@ -58,7 +58,9 @@
 #' ibdPosteriors(cousinsDemo, k1 = 0.2, a = 5)
 #'
 #' @export
-ibdPosteriors = function(data, ids = NULL, k1, a, prepped = FALSE) {
+ibdPosteriors = function(data, ids = NULL, k1, a, prepped = FALSE, verbose = FALSE) {
+
+  cat("Calculating IBD posteriors...\n")
 
   .data = if(prepped) data else prepForHMM(data, ids = ids)
 

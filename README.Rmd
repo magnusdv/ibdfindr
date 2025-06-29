@@ -45,7 +45,7 @@ The function `findIBD()` conveniently wraps the key steps of the package:
 
 * Fit a continuous-time HMM to the data (`fitHMM()`)
 * Find the most likely set of IBD segments (`findSegments()`)
-* Calculate posterior IBD probabilities at the marker loci (`ibdPosteriors()`)
+* Calculate the posterior IBD probability at each marker (`ibdPosteriors()`)
 
 ```{r}
 ibd = findIBD(cousinsDemo)

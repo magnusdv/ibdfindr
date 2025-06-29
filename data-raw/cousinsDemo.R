@@ -8,6 +8,7 @@ ids = leaves(x)
 
 # Simulate IBD pattern
 sim = ibdsim(x, seed = 1)
+realisedKappa(sim, ids)$perSimulation
 
 # True IBD sharing
 trueSegs = findPattern(sim, list(carriers = ids))

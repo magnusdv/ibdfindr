@@ -48,20 +48,19 @@ package:
 
 - Fit a continuous-time HMM to the data (`fitHMM()`)
 - Find the most likely set of IBD segments (`findSegments()`)
-- Calculate posterior IBD probabilities at the marker loci
+- Calculate the posterior IBD probability at each marker
   (`ibdPosteriors()`)
 
 ``` r
 ibd = findIBD(cousinsDemo)
-#> Chromosome type: autosomal
-#> Thompson estimation of `k1`:
-#>   (k0, k1, k2) = (0.857, 0.143, 0)
-#> Optimising `a` conditional on k1 = 0.143 
-#> Fitting HMM done:
-#>   k1 = 0.143, a = 5.025
-#> Finding IBD segments...done
-#>   10 segments found
-#> Calculating IBD posteriors...done
+#> Chromosome type: autosomal 
+#> Fitting HMM parameters...
+#>   Optimising `k1` and `a` jointly
+#>   k1 = 0.128, a = 5.070
+#> Finding IBD segments...
+#>   10 segments (total length: 481.10 cM)
+#> Calculating IBD posteriors...
+#> Analysis complete in 0.916 secs
 ```
 
 For details of the different steps, see the documentation of the
@@ -88,12 +87,14 @@ IBD segments on the X chromosome.
 
 ``` r
 ibdX = findIBD(brothersX)
-#> Chromosome type: X (male/male)
-#> Fitting HMM done:
+#> Chromosome type: X (male/male) 
+#> Fitting HMM parameters...
+#>   Optimising `k1` and `a` jointly
 #>   k1 = 0.652, a = 7.102
-#> Finding IBD segments...done
-#>   3 segments found
-#> Calculating IBD posteriors...done
+#> Finding IBD segments...
+#>   3 segments (total length: 101.74 cM)
+#> Calculating IBD posteriors...
+#> Analysis complete in 0.078 secs
 
 plotIBD(ibdX)
 ```

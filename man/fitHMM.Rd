@@ -40,19 +40,21 @@ A list containing the fitted parameters \code{k1} and \code{a}, and some
 additional information about the optimisation.
 }
 \description{
-This function fits a continuous-time HMM to the given genotype data. It does
-so by optimising the parameters \code{k1} (the probability of being in an IBD
-state) and the transition rate \code{a} to maximise the total log-likelihood.
+This function fits a continuous-time HMM to the provided genotype data, by
+optimising the parameters \code{k1} (the probability of being in an IBD state) and
+\code{a} (the transition rate) to maximise the total log-likelihood.
 }
 \details{
-If \code{thompson = TRUE} (default), the parameter \code{k1} is estimated first, using
-the standard maximum-likelihood approach for estimating pairwise relatedness
-coefficients (first described by Thompson 1975). The actual work is done by a
-call to \code{\link[forrel:ibdEstimate]{forrel::ibdEstimate()}}. The parameter \code{a} is subsequently estimated
-with \code{optim}.
+By default (\code{thompson = FALSE}) both parameters \code{k1} and \code{a} are optimised
+together, using \code{\link[stats:optimize]{stats::optimise()}}.
 
-If \code{thompson = FALSE}, both parameters \code{k1} and \code{a} are optimised together.
-(This is the only method for X chromosomal data.)
+If \code{thompson = TRUE}, then \code{k1} is estimated first, using the
+maximum-likelihood approach for pairwise relatedness coefficients described
+by Thompson (1975). (Note that, although this method was originally developed
+for unlinked markers, it yields unbiased estimates also with linked markers.)
+The estimation of \code{k1} is performed internally by calling
+\code{\link[forrel:ibdEstimate]{forrel::ibdEstimate()}}. Subsequently, the parameter \code{a} is estimated
+conditional on the \code{k1} value.
 }
 \examples{
 \dontrun{
