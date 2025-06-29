@@ -4,7 +4,7 @@
 \alias{ibdPosteriors}
 \title{IBD posteriors}
 \usage{
-ibdPosteriors(data, ids = NULL, k1, a, prepped = FALSE)
+ibdPosteriors(data, ids = NULL, k1, a, prepped = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{data}{Data frame with required columns \code{chrom}, \code{cm}, \code{a1} and \code{freq1}.}
@@ -15,6 +15,8 @@ ibdPosteriors(data, ids = NULL, k1, a, prepped = FALSE)
 
 \item{prepped}{A logical indicating if the input data has undergone internal
 prepping. Can be ignored by most users.}
+
+\item{verbose}{A logical.}
 }
 \value{
 Data frame similar to \code{data}, with a column \code{post} containing the

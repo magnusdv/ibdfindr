@@ -45,18 +45,21 @@
 
 #' Identify IBD segments
 #'
-#' Identify genomic segments shared identical-by-descent (IBD) between two
-#' individuals from SNP marker data. The underlying method uses a hidden Markov
-#' model (HMM) and the Viterbi algorithm to infer the most likely IBD state (0 =
-#' non-IBD, 1 = IBD) at each marker.
+#' Identifies genomic segments shared identical-by-descent (IBD) between two
+#' individuals from SNP marker data. The method applies a hidden Markov model
+#' (HMM) along each chromosome, with states 0 (non-IBD) and 1 (IBD), and uses
+#' the Viterbi algorithm to infer the most likely sequence of states.
 #'
 #' @param data Data frame with required columns `chrom`, `cm`, `a1` and `freq1`.
 #' @param ids Genotype columns (default: last 2 columns).
 #' @param k1,a HMM parameters. See [fitHMM()] for how to estimate these.
 #' @param prepped A logical indicating if the input data has undergone internal
 #'   prepping. Can be ignored by most users.
+#' @param verbose A logical.
 #'
-#' @returns Data frame with IBD segments.
+#' @returns Data frame with IBD segments, described with columns `chrom`,
+#'   `startCM`, `endCM` and `n` (the number of markers in the segment).
+#'
 #' @seealso [plotIBD()]
 #'
 #' @examples
@@ -86,10 +89,10 @@ findSegments = function(data, ids = NULL, k1, a, prepped = FALSE, verbose = FALS
     stops = cumsum(runs$lengths)
     starts = c(1, utils::head(stops, -1) + 1)
 
-    data.frame(chrom = chrdat$chrom[1],
-               start = chrdat$cm[starts[ibd]],
-               end   = chrdat$cm[stops[ibd]],
-               n     = runs$lengths[ibd])
+    data.frame(chrom   = chrdat$chrom[1],
+               startCM = chrdat$cm[starts[ibd]],
+               endCM   = chrdat$cm[stops[ibd]],
+               n       = runs$lengths[ibd])
   })
 
   res = do.call(rbind, seglist)
@@ -97,7 +100,7 @@ findSegments = function(data, ids = NULL, k1, a, prepped = FALSE, verbose = FALS
 
   if(verbose) {
     ns = if(is.null(res)) 0 else nrow(res)
-    tl = if(is.null(res)) 0 else sum(res$end - res$start)
+    tl = if(is.null(res)) 0 else sum(res$endCM - res$startCM)
     cat(sprintf("  %d segments (total length: %.2f cM)\n", ns, tl))
   }
 

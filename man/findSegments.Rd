@@ -4,7 +4,7 @@
 \alias{findSegments}
 \title{Identify IBD segments}
 \usage{
-findSegments(data, ids = NULL, k1, a, prepped = FALSE)
+findSegments(data, ids = NULL, k1, a, prepped = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{data}{Data frame with required columns \code{chrom}, \code{cm}, \code{a1} and \code{freq1}.}
@@ -15,15 +15,17 @@ findSegments(data, ids = NULL, k1, a, prepped = FALSE)
 
 \item{prepped}{A logical indicating if the input data has undergone internal
 prepping. Can be ignored by most users.}
+
+\item{verbose}{A logical.}
 }
 \value{
 Data frame with IBD segments.
 }
 \description{
-Identify genomic segments shared identical-by-descent (IBD) between two
-individuals from SNP marker data. The underlying method uses a hidden Markov
-model (HMM) and the Viterbi algorithm to infer the most likely IBD state (0 =
-non-IBD, 1 = IBD) at each marker.
+Identifies genomic segments shared identical-by-descent (IBD) between two
+individuals from SNP marker data. The method applies a hidden Markov model
+(HMM) along each chromosome, with states 0 (non-IBD) and 1 (IBD), and uses
+the Viterbi algorithm to infer the most likely sequence of states.
 }
 \examples{
 findSegments(cousinsDemo, k1 = 0.2, a = 5)

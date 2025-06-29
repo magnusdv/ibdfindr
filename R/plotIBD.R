@@ -91,7 +91,7 @@ plotIBD = function(x, segments = NULL, chrom = NULL, ncol = NULL,
   if(!is.null(segments)) {
     p = p + ggplot2::geom_segment(
       data = as.data.frame(segments), size = 1.5, color = "red",
-      aes(x = start, xend = end, y = -0.15, yend = -0.15))
+      aes(x = startCM, xend = endCM, y = -0.15, yend = -0.15))
   }
 
   if(!is.null(refSegs)) {
@@ -105,5 +105,5 @@ plotIBD = function(x, segments = NULL, chrom = NULL, ncol = NULL,
 
 
 utils::globalVariables(
-  c("cm","ibs","post","start","end", "startCM", "endCM")
+  c("cm","ibs","post","startCM", "endCM")
 )

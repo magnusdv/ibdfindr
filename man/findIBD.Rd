@@ -4,7 +4,14 @@
 \alias{findIBD}
 \title{All-in-one workflow for finding IBD segments}
 \usage{
-findIBD(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE, verbose = TRUE)
+findIBD(
+  data,
+  ids = NULL,
+  k1 = NULL,
+  a = NULL,
+  thompson = FALSE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{data}{Data frame with required columns \code{chrom}, \code{cm}, \code{a1} and \code{freq1}
@@ -15,7 +22,7 @@ findIBD(data, ids = NULL, k1 = NULL, a = NULL, thompson = TRUE, verbose = TRUE)
 \item{k1, a}{HMM parameters passed on to \code{\link[=fitHMM]{fitHMM()}}. Supplying a value fixes
 the parameter; if NULL (default), the parameter is estimated.}
 
-\item{thompson}{A logical passed on to \code{\link[=fitHMM]{fitHMM()}}.}
+\item{thompson}{A logical passed on to \code{\link[=fitHMM]{fitHMM()}}. Default: FALSE.}
 
 \item{verbose}{A logical, by default TRUE.}
 }
@@ -31,9 +38,9 @@ A list with the following elements:
 \description{
 This function conveniently wraps the key steps of the package. It first fits
 a continuous-time HMM to the data (\code{\link[=fitHMM]{fitHMM()}}), then identifies IBD segments
-(\code{\link[=findSegments]{findSegments()}}), and finally computes marker-wise posterior IBD
-probabilities (\code{\link[=ibdPosteriors]{ibdPosteriors()}}). The result can be passed straight to
-plotIBD() for visualisation.
+(\code{\link[=findSegments]{findSegments()}}), and finally computes the marker-wise posterior IBD
+probability at each marker locus (\code{\link[=ibdPosteriors]{ibdPosteriors()}}). The result can be
+passed straight to \code{\link[=plotIBD]{plotIBD()}} for visualisation.
 }
 \examples{
 ibd = findIBD(brothersX)

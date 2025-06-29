@@ -2,16 +2,16 @@
 #'
 #' This function conveniently wraps the key steps of the package. It first fits
 #' a continuous-time HMM to the data ([fitHMM()]), then identifies IBD segments
-#' ([findSegments()]), and finally computes marker-wise posterior IBD
-#' probabilities ([ibdPosteriors()]). The result can be passed straight to
-#' plotIBD() for visualisation.
+#' ([findSegments()]), and finally computes the marker-wise posterior IBD
+#' probability at each marker locus ([ibdPosteriors()]). The result can be
+#' passed straight to [plotIBD()] for visualisation.
 #'
 #' @param data Data frame with required columns `chrom`, `cm`, `a1` and `freq1`
 #'   (case insensitive).
 #' @param ids Genotype columns (default: last 2 columns).
 #' @param k1,a HMM parameters passed on to [fitHMM()]. Supplying a value fixes
 #'   the parameter; if NULL (default), the parameter is estimated.
-#' @param thompson A logical passed on to [fitHMM()].
+#' @param thompson A logical passed on to [fitHMM()]. Default: FALSE.
 #' @param verbose A logical, by default TRUE.
 #'
 #' @returns A list with the following elements:
@@ -45,6 +45,6 @@ findIBD = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = FALSE,
   if(verbose)
     cat("Analysis complete in", format(Sys.time() - st, digits = 3), "\n")
 
-  list(ids = attr(.data, "ids"), k1 = params$k1, a = params$a,
-       segments = segs, posteriors = post)
+  list(ids = attr(.data, "ids"), k1 = params$k1, a = params$a, segments = segs,
+       posteriors = post)
 }

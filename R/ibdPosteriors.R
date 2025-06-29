@@ -48,6 +48,7 @@
 #' @param k1,a HMM parameters. See [fitHMM()] for how to estimate these.
 #' @param prepped A logical indicating if the input data has undergone internal
 #'   prepping. Can be ignored by most users.
+#' @param verbose A logical.
 #'
 #' @returns Data frame similar to `data`, with a column `post` containing the
 #'   posterior IBD probability at each marker locus.

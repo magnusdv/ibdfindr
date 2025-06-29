@@ -60,7 +60,7 @@ ibd = findIBD(cousinsDemo)
 #> Finding IBD segments...
 #>   10 segments (total length: 481.10 cM)
 #> Calculating IBD posteriors...
-#> Analysis complete in 0.916 secs
+#> Analysis complete in 0.974 secs
 ```
 
 For details of the different steps, see the documentation of the
@@ -94,7 +94,7 @@ ibdX = findIBD(brothersX)
 #> Finding IBD segments...
 #>   3 segments (total length: 101.74 cM)
 #> Calculating IBD posteriors...
-#> Analysis complete in 0.078 secs
+#> Analysis complete in 0.0919 secs
 
 plotIBD(ibdX)
 ```

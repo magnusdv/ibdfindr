@@ -8,22 +8,22 @@ Description: Implements continuous-time hidden Markov models to infer
     identity-by-descent (IBD) segments shared by two individuals from
     their SNP genotypes. Provides posterior probabilities at each marker
     (forward-backward), prediction of IBD segments (Viterbi), and
-    functions for visualising results. Supports both autosomes and the X
-    chromosome.
+    functions for visualising results. Supports both autosomal and X
+    chromosomes.
 License: GPL (>= 3)
+URL: https://github.com/magnusdv/ibdfindr
+BugReports: https://github.com/magnusdv/ibdfindr/issues
 Depends: 
     R (>= 4.1)
 Imports: 
     forrel,
     ggplot2,
-    pedtools,
-    ibdsim2
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
-LazyData: true
-URL: https://github.com/magnusdv/ibdfindr
-BugReports: https://github.com/magnusdv/ibdfindr/issues
+    ibdsim2,
+    pedtools
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2

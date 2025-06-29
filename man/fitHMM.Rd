@@ -9,7 +9,7 @@ fitHMM(
   ids = NULL,
   k1 = NULL,
   a = NULL,
-  thompson = TRUE,
+  thompson = FALSE,
   prepped = FALSE,
   verbose = FALSE,
   ...
