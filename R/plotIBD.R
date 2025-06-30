@@ -95,9 +95,14 @@ plotIBD = function(x, segments = NULL, chrom = NULL, ncol = NULL,
   }
 
   if(!is.null(refSegs)) {
+    pr = computePR(refSegs, segments)
+    subt = sprintf("Precision = %.1f%% (overlap / red).  Recall = %.1f%% (overlap / blue)",
+          100*pr$Precision, 100*pr$Recall)
+
     p = p + ggplot2::geom_segment(
       data = refSegs, col = "blue", linewidth = 1.5,
-      ggplot2::aes(x = startCM, xend = endCM, y = .2, yend = .2))
+      ggplot2::aes(x = startCM, xend = endCM, y = .2, yend = .2)) +
+      ggplot2::labs(subtitle = subt)
   }
 
   p
