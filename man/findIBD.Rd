@@ -15,9 +15,11 @@ findIBD(
 }
 \arguments{
 \item{data}{Data frame with required columns \code{chrom}, \code{cm}, \code{a1} and \code{freq1}
-(case insensitive).}
+(case insensitive). Alternatively, a \code{ped} object, in which case the SNP
+data is extracted internally.}
 
-\item{ids}{Genotype columns (default: last 2 columns).}
+\item{ids}{Character vector indicating genotype columns of \code{data} (default:
+last 2 columns).}
 
 \item{k1, a}{HMM parameters passed on to \code{\link[=fitHMM]{fitHMM()}}. Supplying a value fixes
 the parameter; if NULL (default), the parameter is estimated.}

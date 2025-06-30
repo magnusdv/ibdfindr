@@ -122,7 +122,7 @@ asSingletons = function(data, ids = NULL, prepped = FALSE) {
 
 #' @importFrom pedtools getMap getLocusAttributes getGenotypes typedMembers
 #' @importFrom ibdsim2 loadMap convertPos
-getSNPdata = function(x) {
+getSNPdata = function(x, ids = NULL) {
   snpmap = getMap(x)
 
   chrs = unique.default(snpmap$CHROM)
@@ -130,19 +130,21 @@ getSNPdata = function(x) {
   gmap = loadMap("decode19", chrom = chrs)
 
   snpmap$CM = convertPos(chrom = snpmap$CHROM, Mb = snpmap$MB, map = gmap,
-                               sex = if(Xchrom) "female" else "average")
+                         sex = if(Xchrom) "female" else "average")
 
   als = getLocusAttributes(x, attribs = "alleles", simplify = TRUE)
   if(!length(als))
     stop2("No attached markers")
   if(!all(lengths(als) == 2))
     stop2("Some markers are not SNPs")
+
   alsmat = do.call(rbind, als)
   colnames(alsmat) = c("A1", "A2")
 
   freq1 = sapply(x$MARKERS, function(m) attr(m, "afreq")[1])
 
-  g = getGenotypes(x, ids = typedMembers(x)) |> t.default()
+  ids = ids %||% typedMembers(x)
+  g = getGenotypes(x, ids = ids) |> t.default()
 
   cbind(snpmap, alsmat, FREQ1 = freq1, g)
 }

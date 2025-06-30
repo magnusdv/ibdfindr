@@ -19,7 +19,8 @@ prepping. Can be ignored by most users.}
 \item{verbose}{A logical.}
 }
 \value{
-Data frame with IBD segments.
+Data frame with IBD segments, described with columns \code{chrom},
+\code{startCM}, \code{endCM} and \code{n} (the number of markers in the segment).
 }
 \description{
 Identifies genomic segments shared identical-by-descent (IBD) between two

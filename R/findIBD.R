@@ -7,8 +7,10 @@
 #' passed straight to [plotIBD()] for visualisation.
 #'
 #' @param data Data frame with required columns `chrom`, `cm`, `a1` and `freq1`
-#'   (case insensitive).
-#' @param ids Genotype columns (default: last 2 columns).
+#'   (case insensitive). Alternatively, a `ped` object, in which case the SNP
+#'   data is extracted internally.
+#' @param ids Character vector indicating genotype columns of `data` (default:
+#'   last 2 columns).
 #' @param k1,a HMM parameters passed on to [fitHMM()]. Supplying a value fixes
 #'   the parameter; if NULL (default), the parameter is estimated.
 #' @param thompson A logical passed on to [fitHMM()]. Default: FALSE.
@@ -26,11 +28,17 @@
 #' ibd = findIBD(brothersX)
 #' plotIBD(ibd)
 #'
+#' @importFrom pedtools is.ped is.pedList
 #' @export
 findIBD = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = FALSE,
                    verbose = TRUE)  {
   st = Sys.time()
 
+  if(is.ped(data) || is.pedList(data)) {
+    if(verbose)
+      cat("Extracting SNP data from pedigree\n")
+    data = getSNPdata(data)
+  }
   .data = prepForHMM(data, ids = ids)
 
   params = fitHMM(.data, k1 = k1, a = a, prepped = TRUE, thompson = thompson,
