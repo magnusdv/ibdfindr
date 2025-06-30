@@ -94,7 +94,6 @@ chromNumber = function(x) {
 }
 
 
-#' @importFrom pedtools singletons setSNPs
 asSingletons = function(data, ids = NULL, prepped = FALSE) {
 
   .data = if(prepped) data else prepForHMM(data, ids = ids, keepOld = TRUE)
@@ -120,7 +119,7 @@ asSingletons = function(data, ids = NULL, prepped = FALSE) {
     setSNPs(snpData = snpData)
 }
 
-#' @importFrom pedtools getMap getLocusAttributes getGenotypes typedMembers
+
 #' @importFrom ibdsim2 loadMap convertPos
 getSNPdata = function(x, ids = NULL) {
   snpmap = getMap(x)

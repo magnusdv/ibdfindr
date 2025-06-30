@@ -28,7 +28,6 @@
 #' ibd = findIBD(brothersX)
 #' plotIBD(ibd)
 #'
-#' @importFrom pedtools is.ped is.pedList
 #' @export
 findIBD = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = FALSE,
                    verbose = TRUE)  {
