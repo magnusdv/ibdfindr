@@ -45,24 +45,22 @@ computePR = function(call, truth, details = FALSE) {
 
   totalT = sum(truth$endCM - truth$startCM)
   totalC = sum(call$endCM - call$startCM)
-  FP = totalC - TP
-  FN = totalT - TP
-  precis   = TP / (TP + FP)
-  recall = TP / (TP + FN)
+  precis = TP / totalC
+  recall = TP / totalT
 
   res = data.frame(Precision = precis, Recall = recall)
 
   if(details) {
     res$F1 = 2 * precis * recall / (precis + recall)
-    res$TP = TP
-    res$FP = FP
-    res$FN = FN
+    res$CallTotal = totalC
+    res$TruthTotal = totalT
   }
   res
 }
 
 # Fast sweep-algorithm for intersection of two sorted interval lists
 rangeIntersect = function(x) {
+  x = lapply(x, as.matrix)
   nrws = lengths(x, use.names=FALSE)/2
   if (any(nrws == 0)) return(matrix(numeric(0), ncol=2))
 

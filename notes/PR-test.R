@@ -7,7 +7,7 @@ ids = leaves(x)
 
 # Simulate IBD pattern
 sim = ibdsim(x, ids = ids, seed = 1, verbose = FALSE)
-realisedKappa(sim)$perSimulation
+realisedKappa(sim)
 
 # True IBD segments
 trueSegs = findPattern(sim, list(carriers = ids))
@@ -17,18 +17,17 @@ karyoHaploid(trueSegs)
 # PR simulations ----------------------------------------------------------
 
 # Number of SNPs
-mvec = c(2,4,6,10,20)*1000
+nvec = c(2,4,6,10,20)*1000
 
-prs = sapply(mvec, function(m) {print(m)
+prs = sapply(nvec, function(m) {
   y = x |>
-    distributeMarkers(n = m, afreq = c(0.5, 0.5)) |>
+    distributeMarkers(n = n, afreq = c(0.5, 0.5)) |>
     profileSimIBD(sim, verbose = F)
 
   r = findIBD(y, verbose = F, thomp = F)
-  pr = computePR(true7, r$segments)[4:5]
+  pr = computePR(true7, r$segments)[4:5] |> cbind(n = n)
   print(pr)
 })
+
 prs
-matplot(mvec, t(prs), type = "b")
-matplot(
-  t(prs), type = "b")
+matplot(t(prs), type = "b")

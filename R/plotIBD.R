@@ -95,7 +95,7 @@ plotIBD = function(x, segments = NULL, chrom = NULL, ncol = NULL,
   }
 
   if(!is.null(refSegs)) {
-    pr = computePR(refSegs, segments)
+    pr = computePR(call = segments, truth = refSegs)
     subt = sprintf("Precision = %.1f%% (overlap / red).  Recall = %.1f%% (overlap / blue)",
           100*pr$Precision, 100*pr$Recall)
 

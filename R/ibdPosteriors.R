@@ -61,7 +61,7 @@
 #' @export
 ibdPosteriors = function(data, ids = NULL, k1, a, prepped = FALSE, verbose = FALSE) {
 
-  cat("Calculating IBD posteriors...\n")
+  if(verbose) cat("Calculating IBD posteriors...\n")
 
   .data = if(prepped) data else prepForHMM(data, ids = ids)
 
