@@ -24,10 +24,15 @@ cousinsDemo
 \description{
 Simulated genotypes for two individuals at the autosomal kinship SNPs from
 the FORCE panel (Tillmar et al., 2021). The data was generated with the
-\code{ibdsim2} package, assuming a relationship of first cousins once removed.
+\code{ibdsim2} package, assuming a relationship of first cousins.
 }
 \examples{
 cousinsDemo
+
+\dontrun{
+r = findIBD(cousinsDemo)
+plotIBD(r)
+}
 
 }
 \references{

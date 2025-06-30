@@ -29,6 +29,9 @@ the FORCE panel (Tillmar et al., 2021). The data was generated with the
 \examples{
 brothersX
 
+r = findIBD(brothersX)
+plotIBD(r)
+
 }
 \references{
 Tillmar et al. \emph{The FORCE Panel: An All-in-One SNP Marker Set for

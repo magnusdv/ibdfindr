@@ -2,7 +2,7 @@
 #'
 #' Simulated genotypes for two individuals at the autosomal kinship SNPs from
 #' the FORCE panel (Tillmar et al., 2021). The data was generated with the
-#' `ibdsim2` package, assuming a relationship of first cousins once removed.
+#' `ibdsim2` package, assuming a relationship of first cousins.
 #'
 #' @format A tibble with 3,915 rows and 9 variables:
 #' * `CHROM`: Chromosome label
@@ -24,6 +24,11 @@
 #'
 #' @examples
 #' cousinsDemo
+#'
+#' \dontrun{
+#' r = findIBD(cousinsDemo)
+#' plotIBD(r)
+#' }
 #'
 "cousinsDemo"
 
@@ -54,5 +59,8 @@
 
 #' @examples
 #' brothersX
+#'
+#' r = findIBD(brothersX)
+#' plotIBD(r)
 #'
 "brothersX"

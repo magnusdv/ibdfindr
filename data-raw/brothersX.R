@@ -16,30 +16,17 @@ trueSegs
 haploDraw(x, sim)
 
 # Simulate genotypes
-y = profileSimIBD(x, sim, ids = ids, seed = 1729)
-g = getGenotypes(y, ids = ids)
+y = profileSimIBD(x, sim, ids = ids, seed = 1)
 
-# Dataset with annotation and genotypes
-brothersX = tibble(XFORCE, ID1 = g[1, ], ID2 = g[2, ])
+# Quick check of results
+# y |> findIBD() |> plotIBD(refSegs = trueSegs)
 
-# Add centiMorgan positions
-cm = convertPos(Mb = XFORCE$MB, map = mapX, sex = "female")
-brothersX = brothersX |> add_column(CM = cm, .before = "A1")
+# Extract and prepare dataset
+df = ibdfindr:::getSNPdata(y)
+names(df)[match(ids, names(df))] = c("ID1", "ID2")
+
+brothersX = as_tibble(df)
 
 # Save dataset
 usethis::use_data(brothersX, overwrite = TRUE)
 
-
-# Testing -----------------------------------------------------------------
-
-library(ibdfindr)
-pars = fitHMM(brothersX)
-pars
-post = ibdPosteriors(brothersX, k1 = pars$k1, a = pars$a)
-segs = findSegments(brothersX, k1 = pars$k1, a = pars$a)
-plotIBD(post, segs)
-
-# With true segments
-plotIBD(post, segs) +
-  geom_segment(data = trueSegs, col = "blue", linewidth = 1.5,
-               aes(x = startCM, xend = endCM, y = .2, yend = .2))
