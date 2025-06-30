@@ -35,12 +35,12 @@ head(cousinsDemo)
 #> # A tibble: 6 × 9
 #>   CHROM MARKER        MB    CM A1    A2    FREQ1 ID1   ID2  
 #>   <chr> <chr>      <dbl> <dbl> <chr> <chr> <dbl> <chr> <chr>
-#> 1 1     rs9442372   1.08 0     G     A     0.611 A/G   A/G  
-#> 2 1     rs4648727   1.84 0.328 C     A     0.637 A/A   A/C  
-#> 3 1     rs10910082  2.49 1.24  T     C     0.626 T/T   C/T  
-#> 4 1     rs6695131   3.08 2.00  C     T     0.572 C/T   C/C  
-#> 5 1     rs3765703   3.68 4.81  T     G     0.594 T/T   T/T  
-#> 6 1     rs7367066   3.89 5.86  C     T     0.674 C/C   C/C
+#> 1 1     rs9442372   1.08 0     A     G     0.389 A/G   G/G  
+#> 2 1     rs4648727   1.84 0.180 A     C     0.363 A/C   A/C  
+#> 3 1     rs10910082  2.49 1.27  C     T     0.374 C/T   C/T  
+#> 4 1     rs6695131   3.08 1.98  C     T     0.572 C/T   C/T  
+#> 5 1     rs3765703   3.68 4.84  G     T     0.406 G/G   T/T  
+#> 6 1     rs7367066   3.89 5.77  C     T     0.674 C/C   C/C
 ```
 
 The function `findIBD()` conveniently wraps the key steps of the
@@ -56,11 +56,11 @@ ibd = findIBD(cousinsDemo)
 #> Chromosome type: autosomal 
 #> Fitting HMM parameters...
 #>   Optimising `k1` and `a` jointly
-#>   k1 = 0.128, a = 5.070
+#>   k1 = 0.185, a = 7.435
 #> Finding IBD segments...
-#>   10 segments (total length: 481.10 cM)
+#>   14 segments (total length: 597.21 cM)
 #> Calculating IBD posteriors...
-#> Analysis complete in 0.974 secs
+#> Analysis complete in 0.757 secs
 ```
 
 For details of the different steps, see the documentation of the
@@ -90,11 +90,11 @@ ibdX = findIBD(brothersX)
 #> Chromosome type: X (male/male) 
 #> Fitting HMM parameters...
 #>   Optimising `k1` and `a` jointly
-#>   k1 = 0.652, a = 7.102
+#>   k1 = 0.649, a = 6.635
 #> Finding IBD segments...
-#>   3 segments (total length: 101.74 cM)
+#>   3 segments (total length: 88.05 cM)
 #> Calculating IBD posteriors...
-#> Analysis complete in 0.0919 secs
+#> Analysis complete in 0.0389 secs
 
 plotIBD(ibdX)
 ```
