@@ -46,6 +46,12 @@ fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = FALSE,
 
   .data = if(prepped) data else prepForHMM(data, ids = ids)
 
+  # Parameter bounds
+  k1_min = 0.01
+  k1_max = 0.99
+  a_min = 0.01
+  a_max = 30
+
   # Initial parameter values
   k1_init = k1 %||% 0.5
   a_init = a %||% 5
@@ -85,14 +91,14 @@ fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = FALSE,
   if(!is.null(a) && !pedtools:::isNumber(a, 1e-6))
       stop2("`a` must be a positive number: ", a)
 
-  # Estimate remaining parameter, of both jointly -----------------------------
+  # Estimate remaining parameter, or both jointly -----------------------------
 
   if(is.null(k1) && is.null(a)) {
     if(verbose) cat("  Optimising `k1` and `a` jointly\n")
 
-    fn2 = function(p) -totalLoglik(.data, k1 = p[1], a = p[2], prepped = TRUE)
-    res = optim(c(k1 = k1_init, a = a_init), fn2, method =  "L-BFGS-B",
-                lower = c(0.001, 0.001), upper = c(0.999, 100), control = list(...))
+    fn1 = function(p) -totalLoglik(.data, k1 = p[1], a = p[2], prepped = TRUE)
+    res = optim(c(k1 = k1_init, a = a_init), fn1, method =  "L-BFGS-B",
+                lower = c(k1_min, a_min), upper = c(k1_max, a_max), control = list(...))
     respar = as.list(res$par)
     k1 = respar$k1
     a = respar$a
@@ -100,15 +106,15 @@ fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = FALSE,
   else if(!is.null(k1) && is.null(a)) {
     if(verbose) cat("  Optimising `a` conditional on k1 =", k1, "\n")
 
-    fn01 = function(a) -totalLoglik(.data, k1 = k1, a = a, prepped = TRUE)
-    res = optimise(fn01, interval = c(0.001, 100), tol = 0.001)
+    fn2 = function(a) -totalLoglik(.data, k1 = k1, a = a, prepped = TRUE)
+    res = optimise(fn2, interval = c(a_min, a_max), tol = 0.001)
     a = res$minimum
   }
   else if(is.null(k1) && !is.null(a)) {
     if(verbose) cat("  Optimising `k1` conditional on a =", a, "\n")
 
-    fn02 = function(k1) -totalLoglik(.data, k1 = k1, a = a, prepped = TRUE)
-    res = optimise(fn02, interval = c(0.001, 0.999), tol = 0.001)
+    fn3 = function(k1) -totalLoglik(.data, k1 = k1, a = a, prepped = TRUE)
+    res = optimise(fn3, interval = c(k1_max, k1_min), tol = 0.001)
     k1 = res$minimum
   }
 

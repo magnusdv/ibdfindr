@@ -38,7 +38,11 @@ findIBD = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = FALSE,
       cat("Extracting SNP data from pedigree\n")
     data = getSNPdata(data)
   }
+
   .data = prepForHMM(data, ids = ids)
+
+  if(verbose)
+    cat("Individuals:", toString(attr(.data, "ids")), "\n")
 
   params = fitHMM(.data, k1 = k1, a = a, prepped = TRUE, thompson = thompson,
                   verbose = verbose)
