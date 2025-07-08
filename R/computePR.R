@@ -45,7 +45,7 @@ computePR = function(call, truth, details = FALSE) {
 
   totalT = sum(truth$endCM - truth$startCM)
   totalC = sum(call$endCM - call$startCM)
-  precis = TP / totalC
+  precis = if(totalC > 0) TP / totalC else 0
   recall = TP / totalT
 
   res = data.frame(Precision = precis, Recall = recall)
