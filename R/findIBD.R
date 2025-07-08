@@ -13,6 +13,7 @@
 #'   last 2 columns).
 #' @param k1,a HMM parameters passed on to [fitHMM()]. Supplying a value fixes
 #'   the parameter; if NULL (default), the parameter is estimated.
+#' @param err Error rate; a single number in `[0,1]` (default: 0).
 #' @param thompson A logical passed on to [fitHMM()]. Default: FALSE.
 #' @param verbose A logical, by default TRUE.
 #'
@@ -39,7 +40,7 @@ findIBD = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = FALSE,
     data = getSNPdata(data)
   }
 
-  .data = prepForHMM(data, ids = ids)
+  .data = prepForHMM(data, ids = ids, err = err)
 
   if(verbose)
     cat("Individuals:", toString(attr(.data, "ids")), "\n")

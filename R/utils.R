@@ -66,16 +66,6 @@ g2num = function(g, allele1, Xchrom = FALSE) {
   gnum
 }
 
-# Matrix with probabilities of observed emissions in the given dataset
-emissionMat = function(freq1, g1, g2, Xchrom = FALSE, sex = NULL) {
-  em = vapply(seq_along(freq1), function(i) {
-    emat = emission(freq1[i], Xchrom = Xchrom, sex = sex)
-    emat[g1[i], g2[i], ]
-  }, FUN.VALUE = numeric(2))
-
-  colnames(em) = names(freq1)
-  em
-}
 
 # Numeric chromosome labels (for sorting)
 chromNumber = function(x) {

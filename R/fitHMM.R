@@ -20,6 +20,7 @@
 #' @param ids Genotype columns (default: last 2 columns).
 #' @param k1,a Numeric HMM parameters. Supplying a value fixes the parameter; if
 #'   NULL (default), the parameter is estimated.
+#' @param err Error rate; a single number in `[0,1]` (default: 0).
 #' @param thompson A logical indicating the optimisation method. (See Details.)
 #' @param prepped A logical indicating if the input data has undergone internal
 #'   prepping. Can be ignored by most users.
@@ -44,7 +45,7 @@
 fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = FALSE,
                   prepped = FALSE, verbose = FALSE, ...) {
 
-  .data = if(prepped) data else prepForHMM(data, ids = ids)
+  .data = if(prepped) data else prepForHMM(data, ids = ids, err = err)
 
   # Parameter bounds
   k1_min = 0.01

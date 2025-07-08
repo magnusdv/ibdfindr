@@ -9,6 +9,7 @@ fitHMM(
   ids = NULL,
   k1 = NULL,
   a = NULL,
+  err = 0,
   thompson = FALSE,
   prepped = FALSE,
   verbose = FALSE,
@@ -24,6 +25,7 @@ fitHMM(
 \item{k1, a}{Numeric HMM parameters. Supplying a value fixes the parameter; if
 NULL (default), the parameter is estimated.}
 
+\item{err}{Error rate; a single number in \verb{[0,1]} (default: 0).}
 \item{thompson}{A logical indicating the optimisation method. (See Details.)}
 
 \item{prepped}{A logical indicating if the input data has undergone internal

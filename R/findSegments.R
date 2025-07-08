@@ -53,6 +53,7 @@
 #' @param data Data frame with required columns `chrom`, `cm`, `a1` and `freq1`.
 #' @param ids Genotype columns (default: last 2 columns).
 #' @param k1,a HMM parameters. See [fitHMM()] for how to estimate these.
+#' @param err Error rate; a single number in `[0,1]` (default: 0).
 #' @param prepped A logical indicating if the input data has undergone internal
 #'   prepping. Can be ignored by most users.
 #' @param verbose A logical.
@@ -66,11 +67,11 @@
 #' findSegments(cousinsDemo, k1 = 0.2, a = 5)
 #'
 #' @export
-findSegments = function(data, ids = NULL, k1, a, prepped = FALSE, verbose = FALSE) {
+findSegments = function(data, ids = NULL, k1, a, err = 0, prepped = FALSE, verbose = FALSE) {
   if(verbose)
      cat("Finding IBD segments...\n")
 
-  .data = if(prepped) data else prepForHMM(data, ids = ids)
+  .data = if(prepped) data else prepForHMM(data, ids = ids, err = err)
 
   Xchrom = attr(.data, "Xchrom")
   sex = attr(.data, "sex")

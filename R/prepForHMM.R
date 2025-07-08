@@ -1,5 +1,5 @@
 
-prepForHMM = function(data, ids = NULL, keepOld = FALSE) {
+prepForHMM = function(data, ids = NULL, err = 0, keepOld = FALSE) {
 
   # Check required columns
   required = c("chrom", "cm", "a1", "freq1")
@@ -68,7 +68,7 @@ prepForHMM = function(data, ids = NULL, keepOld = FALSE) {
 
   # Emission probs conditioned on IBD 0 and 1
   emissionProbs = emissionMat(data$freq1, g1 = data$g1, g2 = data$g2,
-                              Xchrom = Xchrom, sex = sex)
+                              Xchrom = Xchrom, sex = sex, err = err)
   data$emission0 = emissionProbs[1,]
   data$emission1 = emissionProbs[2,]
 

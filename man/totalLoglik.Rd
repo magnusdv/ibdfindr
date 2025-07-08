@@ -4,7 +4,7 @@
 \alias{totalLoglik}
 \title{Total log-likelihood for observed data}
 \usage{
-totalLoglik(data, ids = NULL, k1, a, prepped = FALSE)
+totalLoglik(data, ids = NULL, k1, a, err = 0, prepped = FALSE)
 }
 \arguments{
 \item{data}{Data frame with required columns \code{chrom}, \code{cm}, \code{a1} and \code{freq1}.}
@@ -12,6 +12,8 @@ totalLoglik(data, ids = NULL, k1, a, prepped = FALSE)
 \item{ids}{Genotype columns (ignored unless \code{prep = TRUE}).}
 
 \item{k1, a}{HMM parameters.}
+
+\item{err}{Error rate; a single number in \verb{[0,1]} (default: 0).}
 
 \item{prepped}{A logical indicating if the input data has undergone internal
 prepping. Can be ignored by most users.}

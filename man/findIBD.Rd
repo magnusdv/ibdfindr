@@ -9,6 +9,7 @@ findIBD(
   ids = NULL,
   k1 = NULL,
   a = NULL,
+  err = 0,
   thompson = FALSE,
   verbose = TRUE
 )
@@ -24,6 +25,7 @@ last 2 columns).}
 \item{k1, a}{HMM parameters passed on to \code{\link[=fitHMM]{fitHMM()}}. Supplying a value fixes
 the parameter; if NULL (default), the parameter is estimated.}
 
+\item{err}{Error rate; a single number in \verb{[0,1]} (default: 0).}
 \item{thompson}{A logical passed on to \code{\link[=fitHMM]{fitHMM()}}. Default: FALSE.}
 
 \item{verbose}{A logical, by default TRUE.}
