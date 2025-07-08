@@ -10,6 +10,7 @@ fitHMM(
   k1 = NULL,
   a = NULL,
   err = 0,
+  method = "L-BFGS-B",
   thompson = FALSE,
   prepped = FALSE,
   verbose = FALSE,
@@ -26,6 +27,9 @@ fitHMM(
 NULL (default), the parameter is estimated.}
 
 \item{err}{Error rate; a single number in \verb{[0,1]} (default: 0).}
+
+\item{method}{A character string indicating the optimisation method to use.}
+
 \item{thompson}{A logical indicating the optimisation method. (See Details.)}
 
 \item{prepped}{A logical indicating if the input data has undergone internal
@@ -55,7 +59,7 @@ maximum-likelihood approach for pairwise relatedness coefficients described
 by Thompson (1975). (Note that, although this method was originally developed
 for unlinked markers, it yields unbiased estimates also with linked markers.)
 The estimation of \code{k1} is performed internally by calling
-\code{\link[forrel:ibdEstimate]{forrel::ibdEstimate()}}. Subsequently, the parameter \code{a} is estimated
+\code{\link[forrel:IBDestimate]{forrel::ibdEstimate()}}. Subsequently, the parameter \code{a} is estimated
 conditional on the \code{k1} value.
 }
 \examples{
@@ -65,5 +69,5 @@ fitHMM(cousinsDemo)
 
 }
 \seealso{
-\code{\link[=totalLoglik]{totalLoglik()}}, \code{\link[forrel:ibdEstimate]{forrel::ibdEstimate()}}
+\code{\link[=totalLoglik]{totalLoglik()}}, \code{\link[forrel:IBDestimate]{forrel::ibdEstimate()}}
 }

@@ -4,7 +4,15 @@
 \alias{findSegments}
 \title{Identify IBD segments}
 \usage{
-findSegments(data, ids = NULL, k1, a, prepped = FALSE, verbose = FALSE)
+findSegments(
+  data,
+  ids = NULL,
+  k1,
+  a,
+  err = 0,
+  prepped = FALSE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{data}{Data frame with required columns \code{chrom}, \code{cm}, \code{a1} and \code{freq1}.}
@@ -12,6 +20,8 @@ findSegments(data, ids = NULL, k1, a, prepped = FALSE, verbose = FALSE)
 \item{ids}{Genotype columns (default: last 2 columns).}
 
 \item{k1, a}{HMM parameters. See \code{\link[=fitHMM]{fitHMM()}} for how to estimate these.}
+
+\item{err}{Error rate; a single number in \verb{[0,1]} (default: 0).}
 
 \item{prepped}{A logical indicating if the input data has undergone internal
 prepping. Can be ignored by most users.}

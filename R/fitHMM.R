@@ -21,6 +21,7 @@
 #' @param k1,a Numeric HMM parameters. Supplying a value fixes the parameter; if
 #'   NULL (default), the parameter is estimated.
 #' @param err Error rate; a single number in `[0,1]` (default: 0).
+#' @param method A character string indicating the optimisation method to use.
 #' @param thompson A logical indicating the optimisation method. (See Details.)
 #' @param prepped A logical indicating if the input data has undergone internal
 #'   prepping. Can be ignored by most users.
@@ -39,11 +40,12 @@
 #' fitHMM(cousinsDemo)
 #' }
 #'
-#' @importFrom stats optim optimise
+#' @importFrom stats optim optimise plogis qlogis
 #' @importFrom forrel ibdEstimate
 #' @export
-fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = FALSE,
-                  prepped = FALSE, verbose = FALSE, ...) {
+fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, err = 0,
+                  method = "L-BFGS-B", thompson = FALSE, prepped = FALSE,
+                  verbose = FALSE, ...) {
 
   .data = if(prepped) data else prepForHMM(data, ids = ids, err = err)
 
@@ -54,7 +56,7 @@ fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = FALSE,
   a_max = 30
 
   # Initial parameter values
-  k1_init = k1 %||% 0.5
+  k1_init = k1 %||% 0.2
   a_init = a %||% 5
 
   # X and sex
@@ -86,23 +88,35 @@ fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = FALSE,
                   toString(round(khat,3))))
   }
 
-  if(!is.null(k1) && !pedtools:::isNumber(k1, 0, 1-1e-6))
+  if(!is.null(k1) && !pedtools:::isNumber(k1, 0, 1))
     stop2("`k1` must be a number in the interval `[0, 1)`: ", k1)
 
-  if(!is.null(a) && !pedtools:::isNumber(a, 1e-6))
+  if(!is.null(a) && !pedtools:::isNumber(a, 0))
       stop2("`a` must be a positive number: ", a)
 
-  # Estimate remaining parameter, or both jointly -----------------------------
+  # Estimate jointly if neither are provided
 
   if(is.null(k1) && is.null(a)) {
-    if(verbose) cat("  Optimising `k1` and `a` jointly\n")
+    meth = method %||% "L-BFGS-B"
+    if(verbose) cat("  Optimising `k1` and `a` jointly; method:", meth, "\n")
 
-    fn1 = function(p) -totalLoglik(.data, k1 = p[1], a = p[2], prepped = TRUE)
-    res = optim(c(k1 = k1_init, a = a_init), fn1, method =  "L-BFGS-B",
+    if(meth == "L-BFGS-B") {
+      fn1 = function(p) -totalLoglik(.data, k1 = p[1], a = p[2], prepped = TRUE)
+      res = optim(c(k1 = k1_init, a = a_init), fn1, method =  "L-BFGS-B",
                 lower = c(k1_min, a_min), upper = c(k1_max, a_max), control = list(...))
-    respar = as.list(res$par)
-    k1 = respar$k1
-    a = respar$a
+      respar = as.list(res$par); #print(res$count)
+      k1 = respar$k1
+      a = respar$a
+    }
+    else {
+      k1_init = plogis(k1_init)
+      a_init = log(a_init)
+      fn1b = function(q) -totalLoglik(.data, k1 = plogis(q[1]), a = exp(q[2]), prepped = TRUE)
+      res = optim(c(k1 = k1_init, a = a_init), fn1b, method = method, control = list(...))
+      respar = as.list(res$par); #print(res$count)
+      k1 = plogis(respar$k1)
+      a = exp(respar$a)
+    }
   }
   else if(!is.null(k1) && is.null(a)) {
     if(verbose) cat("  Optimising `a` conditional on k1 =", k1, "\n")

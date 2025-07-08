@@ -10,6 +10,7 @@ findIBD(
   k1 = NULL,
   a = NULL,
   err = 0,
+  method = NULL,
   thompson = FALSE,
   verbose = TRUE
 )
@@ -26,6 +27,9 @@ last 2 columns).}
 the parameter; if NULL (default), the parameter is estimated.}
 
 \item{err}{Error rate; a single number in \verb{[0,1]} (default: 0).}
+
+\item{method}{Optimisation method.}
+
 \item{thompson}{A logical passed on to \code{\link[=fitHMM]{fitHMM()}}. Default: FALSE.}
 
 \item{verbose}{A logical, by default TRUE.}

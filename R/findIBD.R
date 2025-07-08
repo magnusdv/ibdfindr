@@ -14,6 +14,7 @@
 #' @param k1,a HMM parameters passed on to [fitHMM()]. Supplying a value fixes
 #'   the parameter; if NULL (default), the parameter is estimated.
 #' @param err Error rate; a single number in `[0,1]` (default: 0).
+#' @param method Optimisation method.
 #' @param thompson A logical passed on to [fitHMM()]. Default: FALSE.
 #' @param verbose A logical, by default TRUE.
 #'
@@ -30,8 +31,8 @@
 #' plotIBD(ibd)
 #'
 #' @export
-findIBD = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = FALSE,
-                   verbose = TRUE)  {
+findIBD = function(data, ids = NULL, k1 = NULL, a = NULL, err = 0, method = NULL,
+                   thompson = FALSE, verbose = TRUE)  {
   st = Sys.time()
 
   if(is.ped(data) || is.pedList(data)) {
@@ -45,8 +46,8 @@ findIBD = function(data, ids = NULL, k1 = NULL, a = NULL, thompson = FALSE,
   if(verbose)
     cat("Individuals:", toString(attr(.data, "ids")), "\n")
 
-  params = fitHMM(.data, k1 = k1, a = a, prepped = TRUE, thompson = thompson,
-                  verbose = verbose)
+  params = fitHMM(.data, k1 = k1, a = a, method = method, prepped = TRUE,
+                  thompson = thompson, verbose = verbose)
 
   segs = findSegments(.data, k1 = params$k1, a = params$a, prepped = TRUE,
                       verbose = verbose)
