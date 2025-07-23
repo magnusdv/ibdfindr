@@ -111,7 +111,8 @@ fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, err = 0,
     else {
       k1_init = plogis(k1_init)
       a_init = log(a_init)
-      fn1b = function(q) -totalLoglik(.data, k1 = plogis(q[1]), a = exp(q[2]), prepped = TRUE)
+      fn1b = function(q)
+        -totalLoglik(.data, k1 = plogis(q[1]), a = exp(q[2]), prepped = TRUE)
       res = optim(c(k1 = k1_init, a = a_init), fn1b, method = method, control = list(...))
       respar = as.list(res$par); #print(res$count)
       k1 = plogis(respar$k1)
@@ -139,89 +140,32 @@ fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, err = 0,
 }
 
 
-# ### Attempt at Baum-Welch. Not working properly.
-# ### Not vital to get this working; thompson-optimisation as above probably better (!?)
-# fitHMM_BW = function(data, ids = NULL, maxIter = 20, tol = 1e-6, verbose = T) {
-#
-#   data = prepForHMM(data, ids = ids)
-#
-#   # Init parameters
-#   k1 = 0.2
-#   a = 10
-#
-#   if(verbose) cat(sprintf("Start: k1=%.4g  a=%.4g  logLik=%.3f\n",
-#                           k1, a, totalLoglik(data, k1 = k1, a = a)))
-#
-#   ntot = nrow(data)
-#   chromIdx = split(seq_len(ntot), data$chrom)
-#   p = data$freq1
-#   finLog = \(x) log(pmax(x, .Machine$double.eps))
-#   aRange = c(0.01, 100)
-#
-#   for(it in 1:maxIter) {
-#     gSum = 0; nTot = 0; logL.old = 0
-#     xiAll = list(); dAll = numeric()
-#
-#     ## ----- E-step across chromosomes -----
-#     for(idx in chromIdx) {
-#       n  = length(idx)
-#       d  = c(0, diff(data$cm[idx]))/100
-#       em = sapply(idx, \(i) emission(p[i])[data$g1[i], data$g2[i], ])
-#
-#       # Forward
-#       fwd = bwd = matrix(0, 2, n)
-#       logc = numeric(n)
-#       alpha = c(1-k1, k1) * em[, 1]
-#       logc[1] = log(sum(alpha))
-#       fwd[, 1] = alpha/sum(alpha)
-#
-#       for(i in 2:n) {
-#         alpha = (trans(d[i], k1, a) %*% fwd[, i-1]) * em[,i]
-#         logc[i] = log(sum(alpha))
-#         fwd[, i] = alpha/sum(alpha)
-#       }
-#
-#       bwd[, n] = 1
-#       for(i in (n-1):1)
-#         bwd[, i] = (trans(d[i+1], k1, a) %*% (em[,i+1] * bwd[,i+1])) |> nrm()
-#
-#       # Posteriors
-#       gamma = fwd * bwd
-#       gamma = gamma / rep(colSums(gamma), each = 2)
-#
-#
-#       xi = array(0, c(2, 2, n-1))
-#       for(i in 2:n) {
-#         tm = trans(d[i], k1, a)
-#         xi[,,i-1] = ((fwd[, i-1] %o% (em[, i] * bwd[, i])) * tm) |> nrm()
-#       }
-#       gSum = gSum + sum(gamma[2, ])
-#       nTot = nTot + n
-#       xiAll = c(xiAll, asplit(xi, 3))
-#       dAll = c(dAll, d[-1])
-#       logL.old = logL.old + sum(logc)
-#     }
-#
-#     ## ----- M-step -----
-#     k1.new = gSum/nTot
-#     ll.a = function(aa)
-#       -sum(vapply(seq_along(dAll), \(j) sum(xiAll[[j]] * finLog(trans(dAll[j], k1.new, aa))), 0.0))
-#     a.new = stats::optimize(ll.a, aRange)$minimum
-#
-#     ## likelihood under updated params
-#     logL.new = totalLoglik(data, k1 = k1.new, a = a.new)
-#     if(verbose)
-#       cat(sprintf("it=%d  k1=%.4g  a=%.4g  logLik(old)=%.3f  logLik(new)=%.3f\n",
-#                   it, k1.new, a.new, logL.old, logL.new))
-#
-#     if(abs(logL.new - logL.old) < tol) {
-#       k1 = k1.new
-#       a = a.new
-#       break
-#     }
-#     k1 = k1.new
-#     a = a.new
-#   }
-#
-#   list(k1 = k1, a = a, logLik = totalLoglik(data, k1 = k1, a = a), iter = it)
-# }
+# Estimate HMM parameters (k1, a) from pedigree
+paramsFromPed = function(ped, ids = leaves(ped)) {
+
+  # k1: The pedigree coefficient kappa_1
+  kap = ribd::kappaIBD(ped, ids = ids)
+  if(kap[3] > 0)
+    stop2("Pedigree relationship is not unilineal; cannot proceed")
+
+  k1 = kap[2]
+
+  # a: Estimate via two-locus k_11 over a range of recombination ratios
+  cm = 0:20
+  rho = 0.5 * (1 - exp(-cm/50))
+
+  k11 = unname(sapply(rho, function(r)
+    ribd::twoLocusIBD(ped, ids, rho = r, coefs = "k11")))
+
+  # Non-linear fit for a:
+  nlf = function(a) {
+    pred = k1^2 + (1 - k1)*k1*exp(-a * cm/100)
+    sum((k11 - pred)^2)
+  }
+
+  fit = stats::optimize(nlf, c(0, 20), tol = 1e-3, maximum = FALSE)
+  a = round(fit$minimum, 3)
+
+  # Return parameters
+  list(k1 = k1, a = a)
+}
