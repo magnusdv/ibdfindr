@@ -2,13 +2,20 @@
 prepForHMM = function(data, ids = NULL, err = 0, keepOld = FALSE) {
 
   # Check required columns
-  required = c("chrom", "cm", "a1", "freq1")
   lownames = tolower(names(data))
+  required = c("chrom", "a1", "freq1")
   if(!all(required %in% lownames))
     stop2("Missing column: ", setdiff(required, lownames))
 
-  # Use lower-case names for these
-  names(data)[match(required, lownames)] = required
+  if(!"cm" %in% lownames && !"mb" %in% lownames)
+    stop2("Missing column: Either `cm` or `mb` must be present")
+
+  # Make lower-case names for these
+  names(data)[lownames == "chrom"] = "chrom"
+  names(data)[lownames == "a1"] = "a1"
+  names(data)[lownames == "freq1"] = "freq1"
+  names(data)[lownames == "cm"] = "cm"
+  names(data)[lownames == "mb"] = "mb"
 
   # Genotype columns (default: last 2 columns)
   if(is.null(ids))
@@ -34,7 +41,7 @@ prepForHMM = function(data, ids = NULL, err = 0, keepOld = FALSE) {
   names(data$freq1) = data$marker
 
   # Remove missing data
-  good = !is.na(data$chrom) & !is.na(data$cm) & !is.na(data$a1) & !is.na(data$freq1)
+  good = !is.na(data$chrom) & !is.na(data$cm %||% data$mb) & !is.na(data$a1) & !is.na(data$freq1)
   data = data[good, , drop = FALSE]
 
   # Convert to numeric chrom labels
@@ -48,7 +55,12 @@ prepForHMM = function(data, ids = NULL, err = 0, keepOld = FALSE) {
   # Check for X chromosome
   Xchrom = all(chromNum == 23)
   if(!Xchrom && any(chromNum == 23))
-    stop2("Cannot mix chromosome 23 (X) with autosomes")
+    stop2("Cannot mix autosomal chromosomes and X chromosome. These must be processed separately.")
+
+  # Convert mb to cm if needed
+  if(!"cm" %in% names(data)) {
+    data = mb2cm(data, chromCol = "chrom", mbCol = "mb", Xchrom = Xchrom)
+  }
 
   # Deduce sex if X
   sex = if(Xchrom) getsex(data, ids = ids) else NULL
@@ -77,4 +89,18 @@ prepForHMM = function(data, ids = NULL, err = 0, keepOld = FALSE) {
 
   # Return with attributes
   structure(data, ids = ids, Xchrom = Xchrom, sex = sex)
+}
+
+#' @importFrom ibdsim2 convertPos loadMap
+mb2cm = function(data, chromCol, mbCol, Xchrom = FALSE) {
+
+  if(!Xchrom)
+    cm = ibdsim2::convertPos(chrom = data[[chromCol]], Mb = data[[mbCol]], sex = "average")
+  else {
+    mapX = ibdsim2::loadMap(chrom = "X")[[1]]
+    cm = ibdsim2::convertPos(Mb = data[[mbCol]], map = mapX, sex = "female")
+  }
+
+  data$cm = cm
+  data
 }
