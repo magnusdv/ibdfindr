@@ -65,7 +65,7 @@ plotIBD = function(x, segments = NULL, chrom = NULL, ncol = NULL,
 
   p = ggplot2::ggplot(data, aes(x = cm)) +
     ggplot2::facet_wrap("chrom", ncol = ncol, scales = "free_x",
-                        labeller = ggplot2::labeller(chrom = \(i) paste0("Chr", i))) +
+                        labeller = ggplot2::labeller(chrom = \(i) paste0("Chr", ifelse(i==23, "X", i)))) +
     ggplot2::geom_jitter(aes(y = ibs/2), show.legend = FALSE,  color = "gray",
                          width = 0, height = .075, size = 1, alpha = 1) +
     ggplot2::geom_line(aes(y = post), col = 1) +

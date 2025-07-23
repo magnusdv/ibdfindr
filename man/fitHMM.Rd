@@ -59,7 +59,7 @@ maximum-likelihood approach for pairwise relatedness coefficients described
 by Thompson (1975). (Note that, although this method was originally developed
 for unlinked markers, it yields unbiased estimates also with linked markers.)
 The estimation of \code{k1} is performed internally by calling
-\code{\link[forrel:IBDestimate]{forrel::ibdEstimate()}}. Subsequently, the parameter \code{a} is estimated
+\code{\link[forrel:ibdEstimate]{forrel::ibdEstimate()}}. Subsequently, the parameter \code{a} is estimated
 conditional on the \code{k1} value.
 }
 \examples{
@@ -69,5 +69,5 @@ fitHMM(cousinsDemo)
 
 }
 \seealso{
-\code{\link[=totalLoglik]{totalLoglik()}}, \code{\link[forrel:IBDestimate]{forrel::ibdEstimate()}}
+\code{\link[=totalLoglik]{totalLoglik()}}, \code{\link[forrel:ibdEstimate]{forrel::ibdEstimate()}}
 }
