@@ -58,6 +58,11 @@ To visualise the results we pass the output to `plotIBD()`. This plots the poste
 plotIBD(ibd)
 ```
 
+We may also inspect the identified segments as a data frame, showing the start and end positions, and the number of markers in each segment:
+```{r}
+ibd$segments
+```
+
 ## X-chromosome example
 
 The `brothersX` dataset contains genotypes for two brothers typed with 246 X-chromosomal SNPs. The analysis below indicates that they share 3 IBD segments on the X chromosome.

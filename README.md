@@ -53,14 +53,15 @@ package:
 
 ``` r
 ibd = findIBD(cousinsDemo)
+#> Individuals: ID1, ID2 
 #> Chromosome type: autosomal 
 #> Fitting HMM parameters...
-#>   Optimising `k1` and `a` jointly
-#>   k1 = 0.185, a = 7.435
+#>   Optimising `k1` and `a` jointly; method: L-BFGS-B 
+#>   k1 = 0.185, a = 7.430
 #> Finding IBD segments...
 #>   14 segments (total length: 597.21 cM)
 #> Calculating IBD posteriors...
-#> Analysis complete in 0.757 secs
+#> Analysis complete in 0.938 secs
 ```
 
 For details of the different steps, see the documentation of the
@@ -79,6 +80,28 @@ plotIBD(ibd)
 
 <img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" />
 
+We may also inspect the identified segments as a data frame, showing the
+start and end positions, and the number of markers in each segment:
+
+``` r
+ibd$segments
+#>    chrom    startCM     endCM   n
+#> 1      1 113.000492 153.08623  54
+#> 2      1 186.630319 223.39542  46
+#> 3      2  67.118524 108.35905  50
+#> 4      2 156.120361 227.62362  90
+#> 5      4  59.474215  89.85522  41
+#> 6      4 106.931772 131.69280  35
+#> 7      6 102.041153 136.17734  43
+#> 8      7 118.702115 149.11283  38
+#> 9      8  72.976430 106.82971  55
+#> 10    13  72.049460 127.22724  63
+#> 11    14   1.808552  58.07117  67
+#> 12    14  73.201009 116.00254  49
+#> 13    18  10.592411  83.28443 101
+#> 14    19  72.014020  99.15558  34
+```
+
 ## X-chromosome example
 
 The `brothersX` dataset contains genotypes for two brothers typed with
@@ -87,16 +110,17 @@ IBD segments on the X chromosome.
 
 ``` r
 ibdX = findIBD(brothersX)
+#> Individuals: ID1, ID2 
 #> Chromosome type: X (male/male) 
 #> Fitting HMM parameters...
-#>   Optimising `k1` and `a` jointly
+#>   Optimising `k1` and `a` jointly; method: L-BFGS-B 
 #>   k1 = 0.649, a = 6.635
 #> Finding IBD segments...
 #>   3 segments (total length: 88.05 cM)
 #> Calculating IBD posteriors...
-#> Analysis complete in 0.0389 secs
+#> Analysis complete in 0.0805 secs
 
 plotIBD(ibdX)
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="70%" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-8-1.png" width="70%" style="display: block; margin: auto;" />
