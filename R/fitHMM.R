@@ -144,7 +144,10 @@ fitHMM = function(data, ids = NULL, k1 = NULL, a = NULL, err = 0,
 paramsFromPed = function(ped, ids = leaves(ped)) {
 
   # k1: The pedigree coefficient kappa_1
-  kap = ribd::kappaIBD(ped, ids = ids)
+  inb = ribd::inbreeding(ped, ids = ids)
+  if(any(inb > 0))
+    stop2("Some of the indicated individuals are inbred; cannot proceed")
+  kap = ribd::kappaIBD(ped, ids = ids, inbredAction = 0)
   if(kap[3] > 0)
     stop2("Pedigree relationship is not unilineal; cannot proceed")
 
