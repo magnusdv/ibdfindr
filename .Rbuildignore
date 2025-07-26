@@ -4,5 +4,6 @@
 ^data-raw$
 ^Rprof.out$
 ^README\.Rmd$
+^.github$
+^cran-comments\.md$
 ^notes-private
-

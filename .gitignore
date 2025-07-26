@@ -6,4 +6,5 @@ Rprof.out
 .httr-oauth
 .DS_Store
 .quarto
+cran-comments.md
 notes-private/
