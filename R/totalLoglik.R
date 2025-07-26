@@ -41,8 +41,8 @@
 #' @param ids Genotype columns (ignored unless `prep = TRUE`).
 #' @param k1,a HMM parameters.
 #' @param err Error rate; a single number in `[0,1]` (default: 0).
-#' @param prepped A logical indicating if the input data has undergone internal
-#'   prepping. Can be ignored by most users.
+#' @param prepped A logical indicating if the input data has been internally
+#'   processed. Can be ignored by most users.
 #'
 #' @returns A number: The total log-likelihood of the data under the HMM model.
 #'

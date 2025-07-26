@@ -23,8 +23,8 @@
 #' @param err Error rate; a single number in `[0,1]` (default: 0).
 #' @param method A character string indicating the optimisation method to use.
 #' @param thompson A logical indicating the optimisation method. (See Details.)
-#' @param prepped A logical indicating if the input data has undergone internal
-#'   prepping. Can be ignored by most users.
+#' @param prepped A logical indicating if the input data has been internally
+#'   processed. Can be ignored by most users.
 #' @param verbose A logical indicating whether to print information during the
 #'   optimisation.
 #' @param ... Additional arguments passed to the `control` parameter of

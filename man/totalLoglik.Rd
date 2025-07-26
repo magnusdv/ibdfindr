@@ -15,8 +15,8 @@ totalLoglik(data, ids = NULL, k1, a, err = 0, prepped = FALSE)
 
 \item{err}{Error rate; a single number in \verb{[0,1]} (default: 0).}
 
-\item{prepped}{A logical indicating if the input data has undergone internal
-prepping. Can be ignored by most users.}
+\item{prepped}{A logical indicating if the input data has been internally
+processed. Can be ignored by most users.}
 }
 \value{
 A number: The total log-likelihood of the data under the HMM model.

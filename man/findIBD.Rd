@@ -39,8 +39,8 @@ A list with the following elements:
 \itemize{
 \item \code{k1}: HMM parameter (estimated or provided)
 \item \code{a}: HMM parameter (estimated or provided)
-\item \code{segments}: Data frame with IBD segments.
-\item \code{posteriors}: Data frame with posterior IBD probs at each marker.
+\item \code{segments}: Data frame with IBD segments
+\item \code{posteriors}: Data frame with posterior IBD probabilities at each marker
 }
 }
 \description{

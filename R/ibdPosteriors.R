@@ -47,8 +47,8 @@
 #' @param ids Genotype columns (default: last 2 columns).
 #' @param k1,a HMM parameters. See [fitHMM()] for how to estimate these.
 #' @param err Error rate; a single number in `[0,1]` (default: 0).
-#' @param prepped A logical indicating if the input data has undergone internal
-#'   prepping. Can be ignored by most users.
+#' @param prepped A logical indicating if the input data has been internally
+#'   processed. Can be ignored by most users.
 #' @param verbose A logical.
 #'
 #' @returns Data frame similar to `data`, with a column `post` containing the

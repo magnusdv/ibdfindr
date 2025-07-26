@@ -21,8 +21,8 @@
 #' @returns A list with the following elements:
 #'   * `k1`: HMM parameter (estimated or provided)
 #'   * `a`: HMM parameter (estimated or provided)
-#'   * `segments`: Data frame with IBD segments.
-#'   * `posteriors`: Data frame with posterior IBD probs at each marker.
+#'   * `segments`: Data frame with IBD segments
+#'   * `posteriors`: Data frame with posterior IBD probabilities at each marker
 #'
 #' @seealso [fitHMM()], [findSegments()], [ibdPosteriors()], [plotIBD()]
 #'

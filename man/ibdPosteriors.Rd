@@ -23,8 +23,8 @@ ibdPosteriors(
 
 \item{err}{Error rate; a single number in \verb{[0,1]} (default: 0).}
 
-\item{prepped}{A logical indicating if the input data has undergone internal
-prepping. Can be ignored by most users.}
+\item{prepped}{A logical indicating if the input data has been internally
+processed. Can be ignored by most users.}
 
 \item{verbose}{A logical.}
 }

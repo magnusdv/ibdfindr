@@ -10,7 +10,7 @@ A tibble with 3,915 rows and 9 variables:
 \item \code{CHROM}: Chromosome label
 \item \code{MARKER}: SNP identifier
 \item \code{MB}: Physical position in megabases
-\item \code{CM}: Map position in centiMorgans
+\item \code{CM}: Map position in centiMorgan
 \item \code{A1}: First SNP allele
 \item \code{A2}: Second SNP allele
 \item \code{FREQ1}: Population frequency of \code{A1}

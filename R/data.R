@@ -8,7 +8,7 @@
 #' * `CHROM`: Chromosome label
 #' * `MARKER`: SNP identifier
 #' * `MB`: Physical position in megabases
-#' * `CM`: Map position in centiMorgans
+#' * `CM`: Map position in centiMorgan
 #' * `A1`: First SNP allele
 #' * `A2`: Second SNP allele
 #' * `FREQ1`: Population frequency of `A1`
@@ -43,7 +43,7 @@
 #' * `CHROM`: Chromosome label
 #' * `MARKER`: SNP identifier
 #' * `MB`: Physical position in megabases
-#' * `CM`: Map position in centiMorgans
+#' * `CM`: Map position in centiMorgan
 #' * `A1`: First SNP allele
 #' * `A2`: Second SNP allele
 #' * `FREQ1`: Population frequency of `A1`
