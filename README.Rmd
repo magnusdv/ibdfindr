@@ -24,7 +24,7 @@ The goal of **ibdfindr** is to detect genomic regions shared *identical by desce
 
 ## Installation
 
-While **ibdfindr** is not on CRAN yet, you may install the development version from GitHub:
+Until **ibdfindr** becomes available on CRAN, you may install the development version from GitHub:
 
 ```{r eval = F}
 remotes::install_github("magnusdv/ibdfindr")
@@ -37,8 +37,11 @@ library(ibdfindr)
 ```
 
 As an example we consider the built-in dataset `cousinsDemo`, which contains almost 4000 SNP genotypes for two related individuals (in fact, a pair of cousins).
-```{r}
+```{r, eval = F}
 head(cousinsDemo)
+```
+```{r, echo = F}
+as.data.frame(head(cousinsDemo))
 ```
 
 The function `findIBD()` conveniently wraps the key steps of the package: 
@@ -52,9 +55,9 @@ ibd = findIBD(cousinsDemo)
 ```
 For details of the different steps, see the documentation of the individual functions: `fitHMM()`, `findSegments()`, and `ibdPosteriors()`.
 
-To visualise the results we pass the output to `plotIBD()`. This plots the posterior probabilities on a background (gray points) showing the identity-by-state (IBS) status at each marker, i.e. whether the individuals have 0, 1 or 2 alleles in common. Inferred IBD regions are shown as red segments at the bottom of each chromosome panel.
+To visualise the results we pass the output to `plotIBD()`. This plots the posterior probabilities on a background (grey points) showing the identity-by-state (IBS) status at each marker, i.e. whether the individuals have 0, 1 or 2 alleles in common. Inferred IBD regions are shown as red segments at the bottom of each chromosome panel.
 
-```{r, fig.height = 7, fig.width = 8}
+```{r cousinsDemo-plot, fig.height = 7, fig.width = 8}
 plotIBD(ibd)
 ```
 
@@ -66,7 +69,7 @@ ibd$segments
 ## X-chromosome example
 
 The `brothersX` dataset contains genotypes for two brothers typed with 246 X-chromosomal SNPs. The analysis below indicates that they share 3 IBD segments on the X chromosome.
-```{r fig.height = 3, fig.width = 6, out.width = "70%"}
+```{r brothersX-plot, fig.height = 3, fig.width = 6, out.width = "70%"}
 ibdX = findIBD(brothersX)
 
 plotIBD(ibdX)

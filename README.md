@@ -13,8 +13,8 @@ so by fitting a continuous-time hidden Markov model (HMM) to the data.
 
 ## Installation
 
-While **ibdfindr** is not on CRAN yet, you may install the development
-version from GitHub:
+Until **ibdfindr** becomes available on CRAN, you may install the
+development version from GitHub:
 
 ``` r
 remotes::install_github("magnusdv/ibdfindr")
@@ -32,16 +32,15 @@ a pair of cousins).
 
 ``` r
 head(cousinsDemo)
-#> # A tibble: 6 × 9
-#>   CHROM MARKER        MB    CM A1    A2    FREQ1 ID1   ID2  
-#>   <chr> <chr>      <dbl> <dbl> <chr> <chr> <dbl> <chr> <chr>
-#> 1 1     rs9442372   1.08 0     A     G     0.389 A/G   G/G  
-#> 2 1     rs4648727   1.84 0.180 A     C     0.363 A/C   A/C  
-#> 3 1     rs10910082  2.49 1.27  C     T     0.374 C/T   C/T  
-#> 4 1     rs6695131   3.08 1.98  C     T     0.572 C/T   C/T  
-#> 5 1     rs3765703   3.68 4.84  G     T     0.406 G/G   T/T  
-#> 6 1     rs7367066   3.89 5.77  C     T     0.674 C/C   C/C
 ```
+
+    #>   CHROM     MARKER       MB        CM A1 A2  FREQ1 ID1 ID2
+    #> 1     1  rs9442372 1.083324 0.0000000  A  G 0.3890 A/G G/G
+    #> 2     1  rs4648727 1.844830 0.1803812  A  C 0.3628 A/C A/C
+    #> 3     1 rs10910082 2.487496 1.2670505  C  T 0.3740 C/T C/T
+    #> 4     1  rs6695131 3.084360 1.9782286  C  T 0.5719 C/T C/T
+    #> 5     1  rs3765703 3.675872 4.8403127  G  T 0.4058 G/G T/T
+    #> 6     1  rs7367066 3.887191 5.7748481  C  T 0.6739 C/C C/C
 
 The function `findIBD()` conveniently wraps the key steps of the
 package:
@@ -61,7 +60,7 @@ ibd = findIBD(cousinsDemo)
 #> Finding IBD segments...
 #>   14 segments (total length: 597.21 cM)
 #> Calculating IBD posteriors...
-#> Analysis complete in 0.938 secs
+#> Analysis complete in 0.937 secs
 ```
 
 For details of the different steps, see the documentation of the
@@ -69,7 +68,7 @@ individual functions: `fitHMM()`, `findSegments()`, and
 `ibdPosteriors()`.
 
 To visualise the results we pass the output to `plotIBD()`. This plots
-the posterior probabilities on a background (gray points) showing the
+the posterior probabilities on a background (grey points) showing the
 identity-by-state (IBS) status at each marker, i.e. whether the
 individuals have 0, 1 or 2 alleles in common. Inferred IBD regions are
 shown as red segments at the bottom of each chromosome panel.
@@ -78,7 +77,7 @@ shown as red segments at the bottom of each chromosome panel.
 plotIBD(ibd)
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" />
+<img src="man/figures/README-cousinsDemo-plot-1.png" width="100%" style="display: block; margin: auto;" />
 
 We may also inspect the identified segments as a data frame, showing the
 start and end positions, and the number of markers in each segment:
@@ -118,9 +117,9 @@ ibdX = findIBD(brothersX)
 #> Finding IBD segments...
 #>   3 segments (total length: 88.05 cM)
 #> Calculating IBD posteriors...
-#> Analysis complete in 0.0805 secs
+#> Analysis complete in 0.1 secs
 
 plotIBD(ibdX)
 ```
 
-<img src="man/figures/README-unnamed-chunk-8-1.png" width="70%" style="display: block; margin: auto;" />
+<img src="man/figures/README-brothersX-plot-1.png" width="70%" style="display: block; margin: auto;" />
