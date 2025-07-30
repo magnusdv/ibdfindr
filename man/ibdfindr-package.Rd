@@ -6,7 +6,7 @@
 \alias{ibdfindr-package}
 \title{ibdfindr: HMM Toolkit for Inferring IBD Segments from SNP Genotypes}
 \description{
-Implements continuous-time hidden Markov models to infer identity-by-descent (IBD) segments shared by two individuals from their SNP genotypes. Provides posterior probabilities at each marker (forward-backward), prediction of IBD segments (Viterbi), and functions for visualising results. Supports both autosomal and X chromosomes.
+Implements continuous-time hidden Markov models (HMMs) to infer identity-by-descent (IBD) segments shared by two individuals from their single-nucleotide polymorphism (SNP) genotypes. Provides posterior probabilities at each marker (forward-backward algorithm), prediction of IBD segments (Viterbi algorithm), and functions for visualising results. Supports both autosomal data and X-chromosomal data.
 }
 \seealso{
 Useful links:
