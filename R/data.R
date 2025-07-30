@@ -23,12 +23,8 @@
 #'   Applications*. Genes. (2021)
 #'
 #' @examples
-#' cousinsDemo
 #'
-#' \dontrun{
-#' r = findIBD(cousinsDemo)
-#' plotIBD(r)
-#' }
+#' cousinsDemo
 #'
 "cousinsDemo"
 
@@ -56,11 +52,9 @@
 #' @references Tillmar et al. *The FORCE Panel: An All-in-One SNP Marker Set for
 #'   Confirming Investigative Genetic Genealogy Leads and for General Forensic
 #'   Applications*. Genes. (2021)
-
-#' @examples
-#' brothersX
 #'
-#' r = findIBD(brothersX)
-#' plotIBD(r)
+#' @examples
+#'
+#' brothersX
 #'
 "brothersX"

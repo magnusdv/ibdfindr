@@ -61,5 +61,10 @@ totalLoglik = function(data, ids = NULL, k1, a, err = 0, prepped = FALSE) {
     .loglik(chrdat, k1, a, Xchrom = Xchrom, sex = sex)
   )
 
+  # Attempt with purrr::in_parallel()
+  # logliks = .data |> map(in_parallel(
+  #   \(chrdat) .loglik(chrdat, k1, a, Xchrom = Xchrom, sex = sex),
+  #   k1 = k1, a = a, Xchrom = Xchrom, sex = sex, .loglik = ibdfindr:::.loglik))
+
   sum(unlist(logliks))
 }

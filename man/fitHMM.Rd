@@ -63,9 +63,8 @@ The estimation of \code{k1} is performed internally by calling
 conditional on the \code{k1} value.
 }
 \examples{
-\dontrun{
+
 fitHMM(cousinsDemo)
-}
 
 }
 \seealso{

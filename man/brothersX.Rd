@@ -27,10 +27,8 @@ the FORCE panel (Tillmar et al., 2021). The data was generated with the
 \code{ibdsim2} package.
 }
 \examples{
-brothersX
 
-r = findIBD(brothersX)
-plotIBD(r)
+brothersX
 
 }
 \references{

@@ -36,9 +36,8 @@
 #' @seealso [totalLoglik()], [forrel::ibdEstimate()]
 #'
 #' @examples
-#' \dontrun{
+#'
 #' fitHMM(cousinsDemo)
-#' }
 #'
 #' @importFrom stats optim optimise plogis qlogis
 #' @importFrom forrel ibdEstimate
