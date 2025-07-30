@@ -1,3 +1,3 @@
-# ibdfindr 0.3.0
+# ibdfindr 0.3.1
 
 * Initial CRAN submission.
