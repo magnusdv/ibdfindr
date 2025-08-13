@@ -1,7 +1,7 @@
 # Compute posterior IBD probabilities for a single chromosome
 .ibdPosteriors = function(.data, k1, a, Xchrom = FALSE, sex = NULL) {
   if(length(unique.default(.data$chrom)) > 1)
-    stop("Function `.ibdPosterior()` expects a single chromosome.")
+    stop("Function `.ibdPosteriors()` expects a single chromosome.")
 
   n = nrow(.data)
   d = c(0, diff(.data$cm)) / 100
