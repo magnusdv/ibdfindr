@@ -14,8 +14,8 @@ computePR(call, truth, details = FALSE)
 in the output.}
 }
 \value{
-A data frame with columns \code{Precision} and \code{Recall}. If \code{details = TRUE}, additional columns \code{F1}, \code{TP} (true positives), \code{FP} (false positives)
-and \code{FN} (false negatives) are included.
+A data frame with columns \code{Precision} and \code{Recall}. If \code{details = TRUE}, additional columns \code{F1}, \code{CallTotal} (total length of called segments)
+and \code{TruthTotal} (total length of truth segments) are included.
 }
 \description{
 Computes the precision and recall of IBD segment calls (typically from
