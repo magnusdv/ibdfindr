@@ -9,8 +9,8 @@
 #'   in the output.
 #'
 #' @returns A data frame with columns `Precision` and `Recall`. If `details =
-#' TRUE`, additional columns `F1`, `TP` (true positives), `FP` (false positives)
-#' and `FN` (false negatives) are included.
+#' TRUE`, additional columns `F1`, `CallTotal` (total length of called
+#' segments) and `TruthTotal` (total length of truth segments) are included.
 #'
 #' @examples
 #'

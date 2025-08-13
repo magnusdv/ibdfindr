@@ -1,0 +1,13 @@
+test_that("computePR returns documented columns", {
+  call <- data.frame(chrom = 1, startCM = c(0, 2), endCM = c(1, 3))
+  truth <- data.frame(chrom = 1, startCM = 0, endCM = 2)
+  pr_basic <- computePR(call, truth)
+  expect_equal(names(pr_basic), c("Precision", "Recall"))
+  pr_det <- computePR(call, truth, details = TRUE)
+  expect_equal(names(pr_det), c("Precision", "Recall", "F1", "CallTotal", "TruthTotal"))
+  expect_equal(pr_det$Precision, 0.5)
+  expect_equal(pr_det$Recall, 0.5)
+  expect_equal(pr_det$F1, 0.5)
+  expect_equal(pr_det$CallTotal, 2)
+  expect_equal(pr_det$TruthTotal, 2)
+})
