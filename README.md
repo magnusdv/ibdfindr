@@ -5,7 +5,11 @@
 
 <!-- badges: start -->
 
-<!-- badges: end -->
+[![CRAN
+status](https://www.r-pkg.org/badges/version/ibdfindr)](https://CRAN.R-project.org/package=ibdfindr)
+<!-- [![](https://cranlogs.r-pkg.org/badges/grand-total/ibdfindr?color=yellow)](https://cran.r-project.org/package=ibdfindr)
+[![](https://cranlogs.r-pkg.org/badges/last-month/ibdfindr?color=yellow)](https://cran.r-project.org/package=ibdfindr)
+ badges: end -->
 
 The goal of **ibdfindr** is to detect genomic regions shared *identical
 by descent* (IBD) between two individuals, using SNP genotypes. It does
@@ -13,8 +17,14 @@ so by fitting a continuous-time hidden Markov model (HMM) to the data.
 
 ## Installation
 
-Until **ibdfindr** becomes available on CRAN, you may install the
-development version from GitHub:
+To get the latest official release of **ibdfindr**, install from CRAN as
+follows:
+
+``` r
+install.packages("ibdfindr")
+```
+
+For the development version, install from GitHub:
 
 ``` r
 remotes::install_github("magnusdv/ibdfindr")
@@ -27,8 +37,10 @@ library(ibdfindr)
 ```
 
 As an example we consider the built-in dataset `cousinsDemo`, which
-contains almost 4000 SNP genotypes for two related individuals (in fact,
-a pair of cousins).
+contains almost 4000 SNP genotypes for two related individuals. The data
+were simulated assuming a relationship of first cousins. (For complete
+details on how the data was generated, the source code is available in
+the `data-raw` folder.)
 
 ``` r
 head(cousinsDemo)
@@ -60,7 +72,7 @@ ibd = findIBD(cousinsDemo)
 #> Finding IBD segments...
 #>   14 segments (total length: 597.21 cM)
 #> Calculating IBD posteriors...
-#> Analysis complete in 0.937 secs
+#> Analysis complete in 0.959 secs
 ```
 
 For details of the different steps, see the documentation of the
@@ -117,7 +129,7 @@ ibdX = findIBD(brothersX)
 #> Finding IBD segments...
 #>   3 segments (total length: 88.05 cM)
 #> Calculating IBD posteriors...
-#> Analysis complete in 0.1 secs
+#> Analysis complete in 0.092 secs
 
 plotIBD(ibdX)
 ```
